@@ -1,4 +1,4 @@
-package haui.csn.thitot.controller;
+package haui.csn.thitot.controller.user;
 
 import haui.csn.thitot.entity.User;
 import haui.csn.thitot.repository.UserRepository;
@@ -16,9 +16,9 @@ public class HomeController {
     public String home(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return "index";
+            return "/user/index";
         }
         model.addAttribute("user", user);
-        return "index";
+        return "/user/index";
     }
 }
