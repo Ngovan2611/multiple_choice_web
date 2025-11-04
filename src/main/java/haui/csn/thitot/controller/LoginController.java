@@ -59,4 +59,9 @@ public class LoginController {
         session.invalidate();
         return "redirect:/login";
     }
+
+    @GetMapping
+    public String loginn(Model model) {
+        return "user/login";
+    }
 }
