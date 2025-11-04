@@ -1,154 +1,154 @@
- main {
-      padding: 50px 80px;
-    }
+main {
+  padding: 50px 80px;
+}
 
-    h2 {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 30px;
-    }
+h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
 
-    .exam-container {
-      background-color: #d9d9d9;
-      padding: 60px 40px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
+.exam-container {
+  background-color: #d9d9d9;
+  padding: 60px 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
 
-    .exam-card {
-      background-color: #f9f9f9;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      flex: 0 0 300px;
-      text-align: center;
-      transition: transform 0.3s ease;
-    }
+.exam-card {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  flex: 0 0 300px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
 
-    .exam-card:hover {
-      transform: translateY(-5px);
-    }
+.exam-card:hover {
+  transform: translateY(-5px);
+}
 
-    .exam-title {
-      font-weight: 600;
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
+.exam-title {
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
 
-    .exam-img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
+.exam-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
 
-    .exam-desc {
-      font-size: 13px;
-      color: #555;
-      margin-bottom: 10px;
-        margin-top: 5px;
-    }
+.exam-desc {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 10px;
+    margin-top: 5px;
+}
 
-    .btn-primary {
-      padding: 8px 18px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      background-color: #6f42c1;
-      color: #fff;
-    }
+.btn-primary {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #6f42c1;
+  color: #fff;
+}
 
-    .btn-primary:hover {
-      background-color: #563d7c;
-    }
+.btn-primary:hover {
+  background-color: #563d7c;
+}
 
 
 
-    /* Popup Overlay */
-    .overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
+/* Popup Overlay */
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
 
-    .overlay.active {
-      display: flex;
-    }
+.overlay.active {
+  display: flex;
+}
 
-    .popup {
-      background-color: #f8f3ff;
-      padding: 40px 60px;
-      border-radius: 20px;
-      width: 700px;
-      max-width: 90%;
-      position: relative;
-      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
-      animation: fadeIn 0.3s ease;
-    }
+.popup {
+  background-color: #f8f3ff;
+  padding: 40px 60px;
+  border-radius: 20px;
+  width: 700px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.3s ease;
+}
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.95);}
-      to {opacity: 1; transform: scale(1);}
-    }
+@keyframes fadeIn {
+  from {opacity: 0; transform: scale(0.95);}
+  to {opacity: 1; transform: scale(1);}
+}
 
-    .close-btn {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      background: none;
-      border: none;
-      font-size: 22px;
-      cursor: pointer;
-    }
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
 
-    .popup h3 {
-      text-align: center;
-      margin-bottom: 25px;
-      font-size: 26px;
-      font-weight: 700;
-    }
+.popup h3 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: 700;
+}
 
-    .popup input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-      background: #fff;
-      margin-bottom: 15px;
-    }
+.popup input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  background: #fff;
+  margin-bottom: 15px;
+}
 
- .exam-actions .btn-take-exam {
-     display: block;
-     margin: 20px auto 0;
-     background-color: #6f42c1;
-     color: #fff;
-     text-align: center;
-     text-decoration: none;
-     padding: 10px 40px;
-     border-radius: 25px;
-     cursor: pointer;
-     font-size: 16px;
-     transition: background-color 0.3s ease;
- }
+.exam-actions .btn-take-exam {
+ display: block;
+ margin: 20px auto 0;
+ background-color: #6f42c1;
+ color: #fff;
+ text-align: center;
+ text-decoration: none;
+ padding: 10px 40px;
+ border-radius: 25px;
+ cursor: pointer;
+ font-size: 16px;
+ transition: background-color 0.3s ease;
+}
 
- .exam-actions .btn-take-exam:hover {
-     background-color: #5a32a3;
- }
+.exam-actions .btn-take-exam:hover {
+ background-color: #5a32a3;
+}
 
- .exam-teacher {
-     font-size: 14px;
-     color: #555;
-     margin-bottom: 10px;
- }
- .exam-teacher strong {
-     color: #222;
- }
+.exam-teacher {
+ font-size: 14px;
+ color: #555;
+ margin-bottom: 10px;
+}
+.exam-teacher strong {
+ color: #222;
+}

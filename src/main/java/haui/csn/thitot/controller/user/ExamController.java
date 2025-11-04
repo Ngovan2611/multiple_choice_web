@@ -1,4 +1,4 @@
-package haui.csn.thitot.controller;
+package haui.csn.thitot.controller.user;
 
 import haui.csn.thitot.entity.Answer;
 import haui.csn.thitot.entity.Exam;
@@ -44,7 +44,7 @@ public class ExamController {
         List<Exam> exams = examService.getExamByCreateBy();
         model.addAttribute("exams", exams);
 
-        return "exam";
+        return "/user/exam";
     }
 
     @GetMapping("/exam/{id}/take")
@@ -72,7 +72,7 @@ public class ExamController {
 
         model.addAttribute("answers", answersMap);
 
-        return "exam-take";
+        return "/user/exam-take";
     }
     @GetMapping("/start")
     public String startExam(
@@ -85,14 +85,14 @@ public class ExamController {
 
         if (exam == null) {
             model.addAttribute("message", "Không tìm thấy đề thi phù hợp!");
-            return "exam-notfound";
+            return "/user/exam-notfound";
         }
 
         List<Question> questions = questionService.getAllQuestionsByExam_Id(exam.getExamId());
 
         if (questions == null || questions.isEmpty()) {
             model.addAttribute("message", "Đề thi chưa có câu hỏi!");
-            return "exam-notfound";
+            return "/user/exam-notfound";
         }
 
         Map<Integer, Answer> answersMap = new HashMap<>();
@@ -108,7 +108,7 @@ public class ExamController {
         model.addAttribute("answers", answersMap);
         model.addAttribute("difficulty", difficulty);
 
-        return "exam-take";
+        return "/user/exam-take";
     }
 
 }

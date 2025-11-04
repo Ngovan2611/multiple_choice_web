@@ -1,4 +1,4 @@
-package haui.csn.thitot.controller;
+package haui.csn.thitot.controller.user;
 
 
 import haui.csn.thitot.entity.User;
@@ -24,7 +24,7 @@ public class ProfileController {
             return "redirect:/login";
         }
         model.addAttribute("user", user);
-        return "profile";
+        return "/user/profile";
     }
 
     @PostMapping("/profile/update")
@@ -60,7 +60,7 @@ public class ProfileController {
 
         model.addAttribute("success", "Cập nhật thông tin thành công!");
 
-        return "profile"; // ✅ Giờ Thymeleaf có thể đọc được ${user.xxx}
+        return "/user/profile"; // ✅ Giờ Thymeleaf có thể đọc được ${user.xxx}
     }
 
 

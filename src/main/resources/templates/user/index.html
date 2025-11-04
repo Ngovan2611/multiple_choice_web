@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thi Tot</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    /* ========== TIN TỨC NGÀNH HỌC ========== */
+    .news-section {
+      padding: 60px 8%;
+      background: #fafafa;
+      margin-top: 60px;
+    }
+
+    .news-title {
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #222;
+    }
+
+    .news-container {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr 0.8fr;
+      gap: 30px;
+    }
+
+    .news-card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .news-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .news-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .news-info {
+      padding: 15px 18px;
+    }
+
+    .news-info h3,
+    .news-info h2 {
+      font-weight: 600;
+      margin: 10px 0 6px;
+      color: #222;
+      line-height: 1.4;
+    }
+
+    .news-info p {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .category {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0077cc;
+      text-transform: uppercase;
+    }
+
+    .category.highlight {
+      color: #d93f21;
+    }
+
+    .news-left .news-card {
+      margin-bottom: 25px;
+    }
+
+    .news-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .news-list li {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .news-list li a {
+      display: block;
+      font-size: 15px;
+      font-weight: 500;
+      color: #222;
+      text-decoration: none;
+      line-height: 1.4;
+    }
+
+    .news-list li a:hover {
+      color: #0077cc;
+    }
+
+    .news-list .date {
+      display: block;
+      font-size: 13px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .news-container {
+        grid-template-columns: 1fr;
+      }
+      .news-left, .news-center, .news-right {
+        width: 100%;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+<header>
+  <a href="/home" class="logo">
+    <h1>Thi<span>Tot</span></h1>
+  </a>
+  <nav class="menu">
+    <ul>
+      <li><a href="/profile">Thông tin cá nhân</a></li>
+      <li><a href="/exam">Đề thi</a></li>
+      <li><a href="/subject">Luyện tập</a></li>
+      <li><a href="/history">Lịch sử thi</a></li>
+      <li th:if="${user != null}"><a href="/logout">Đăng xuất</a></li>
+      <li th:unless="${user != null}"><a href="/login">Đăng nhập</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="body">
+  <!-- Giữ nguyên phần giới thiệu -->
+  <div class="title" style="text-align:center; margin-top:40px;">
+    <h1>Bạn muốn cải thiện điểm</h1>
+    <h4>Hãy click vào nút dưới đây để tham gia thi ngay nào!!!</h4>
+    <a th:if="${user != null}" href="/subject" class="btn" style="display:inline-block; margin-top:10px;">Luyện tập ngay</a>
+    <a th:unless="${user != null}" href="/login" class="btn" style="display:inline-block; margin-top:10px;">Luyện tập ngay</a>
+  </div>
+
+  <!-- Giữ nguyên slider môn học -->
+  <div class="list">
+    <div class="title"><h1>Môn học</h1></div>
+    <div class="subject-slider">
+      <div class="subject-track" id="subject-track">
+        <div class="subject"><img src="/image/toan.jpg" alt="Toán"><p class="Subject--name">Toán</p><p class="Subject--decription">Luyện tập tư duy logic, kỹ năng giải bài.</p></div>
+        <div class="subject"><img src="/image/Vatly.png" alt="Vật lý"><p class="Subject--name">Vật lý</p><p class="Subject--decription">Hiểu các quy luật tự nhiên và ứng dụng.</p></div>
+        <div class="subject"><img src="/image/Hoa.jpg" alt="Hóa học"><p class="Subject--name">Hóa học</p><p class="Subject--decription">Khám phá thế giới vật chất và phản ứng hóa học.</p></div>
+        <div class="subject"><img src="/image/Sinh.jpg" alt="Sinh học"><p class="Subject--name">Sinh học</p><p class="Subject--decription">Hiểu cơ thể và thế giới sống quanh ta.</p></div>
+        <div class="subject"><img src="/image/Anh.jpg" alt="Anh văn"><p class="Subject--name">Tiếng Anh</p><p class="Subject--decription">Cải thiện ngôn ngữ và kỹ năng giao tiếp.</p></div>
+      </div>
+    </div>
+    <div class="dots" id="dots-subject"></div>
+  </div>
+
+  <!-- ========== PHẦN TIN TỨC NGÀNH HỌC - Đặt cuối cùng ========== -->
+  <!-- ========== TIN TỨC NGÀNH HỌC ========== -->
+  <section class="news-section">
+    <h2 class="news-title">Tin tức ngành học</h2>
+    <div class="news-container">
+
+      <!-- Cột trái -->
+      <div class="news-left">
+        <article class="news-card small">
+          <img src="/image/news1.jpg" alt="Tin 1">
+          <div class="news-info">
+            <span class="category">Giáo dục</span>
+            <h3>Chính sách tuyển sinh 2025 có gì thay đổi?</h3>
+            <p>Những cập nhật mới nhất về quy chế tuyển sinh đại học và phương án thi tốt nghiệp THPT.</p>
+          </div>
+        </article>
+
+        <article class="news-card small">
+          <img src="/image/news2.jpg" alt="Tin 2">
+          <div class="news-info">
+            <span class="category">Công nghệ</span>
+            <h3>Trí tuệ nhân tạo trong giáo dục: Xu hướng mới của năm 2025</h3>
+            <p>AI đang được ứng dụng mạnh mẽ trong việc đánh giá và hỗ trợ học tập cá nhân hoá.</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- Cột giữa -->
+      <div class="news-center">
+        <article class="news-card large">
+          <img src="/image/news-main.jpg" alt="Tin chính">
+          <div class="news-info">
+            <span class="category highlight">Nổi bật</span>
+            <h2>Sẽ ra sao nếu phương pháp học truyền thống không còn phù hợp?</h2>
+            <p>Khi công nghệ và dữ liệu cá nhân hoá đang làm thay đổi cách chúng ta tiếp cận tri thức, phương pháp học cũ liệu có còn hiệu quả?</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- Cột phải -->
+      <div class="news-right">
+        <ul class="news-list">
+          <li>
+            <span class="category">Khoa học</span>
+            <a href="#">Nghiên cứu mới về tác động của ánh sáng đến khả năng tập trung</a>
+            <span class="date">10/10/2025</span>
+          </li>
+          <li>
+            <span class="category">Giáo dục</span>
+            <a href="#">Đổi mới chương trình THPT: Tăng cường kỹ năng thực tế</a>
+            <span class="date">09/10/2025</span>
+          </li>
+          <li>
+            <span class="category">Công nghệ</span>
+            <a href="#">Các nền tảng học trực tuyến phát triển ra sao sau đại dịch?</a>
+            <span class="date">08/10/2025</span>
+          </li>
+          <li>
+            <span class="category">Du học</span>
+            <a href="#">Cơ hội học bổng toàn phần 2026 tại Nhật Bản</a>
+            <span class="date">07/10/2025</span>
+          </li>
+          <li>
+            <span class="category">Thời sự</span>
+            <a href="#">Bộ GD&ĐT khuyến khích ứng dụng công nghệ trong giảng dạy</a>
+            <span class="date">06/10/2025</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>© 2025 ThiTot - Nền tảng thi trắc nghiệm</footer>
+
+<script>
+  /* ========== SLIDER MÔN HỌC 2D (INFINITE) ========== */
+  const track = document.getElementById("subject-track");
+  const subjects = document.querySelectorAll(".subject");
+  const dotsSubject = document.getElementById("dots-subject");
+  const total = subjects.length;
+  let indexSubject = 0;
+
+  track.innerHTML += track.innerHTML;
+
+  subjects.forEach((_, i) => {
+    const dot = document.createElement("span");
+    dot.classList.add("dot");
+    if (i === 0) dot.classList.add("active");
+    dotsSubject.appendChild(dot);
+  });
+  const subjectDots = document.querySelectorAll("#dots-subject .dot");
+
+  function updateSubjectDots() {
+    subjectDots.forEach(dot => dot.classList.remove("active"));
+    subjectDots[indexSubject % total].classList.add("active");
+  }
+
+  function nextSubject() {
+    indexSubject++;
+    track.style.transition = "transform 0.8s ease-in-out";
+    track.style.transform = `translateX(-${indexSubject * 290}px)`;
+
+    if (indexSubject >= total) {
+      setTimeout(() => {
+        track.style.transition = "none";
+        track.style.transform = "translateX(0)";
+        indexSubject = 0;
+        updateSubjectDots();
+      }, 800);
+    }
+    updateSubjectDots();
+  }
+
+  setInterval(nextSubject, 3000);
+</script>
+</body>
+</html>
