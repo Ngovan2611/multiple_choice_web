@@ -36,7 +36,8 @@ public class ExamController {
     @GetMapping("/exam")
     public String exam(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
-        if (user == null) {
+        if (user == null || user.getRole().equals("admin") || user.getRole().equals("teacher")) {
+            session.invalidate();
             return "redirect:/login";
         }
         model.addAttribute("user", user);

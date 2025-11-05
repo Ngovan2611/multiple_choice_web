@@ -18,7 +18,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginPage() {
-        return "user/login"; // => templates/user/login.html
+        return "user/login";
     }
 
     @PostMapping("/login")
@@ -28,7 +28,6 @@ public class LoginController {
                         HttpSession session) {
 
         User user = userRepository.findUserByUsername(username);
-
         if (user == null) {
             model.addAttribute("error", "Tài khoản không tồn tại!");
             return "user/login";
@@ -39,19 +38,18 @@ public class LoginController {
             return "user/login";
         }
 
-        // ✅ Lưu thông tin user vào session
         session.setAttribute("user", user);
 
-        // ✅ Phân quyền điều hướng
         switch (user.getRole()) {
             case "admin":
-                return "admin/index"; // => AdminController
+                return "redirect:/admin/home";
             case "teacher":
-                return "teacher/index";
+                return "redirect:/teacher/home";
             case "user":
             default:
-                return "user/index";
+                return "redirect:/home";
         }
+
     }
 
     @GetMapping("/logout")
@@ -60,8 +58,5 @@ public class LoginController {
         return "redirect:/login";
     }
 
-    @GetMapping
-    public String loginn(Model model) {
-        return "user/login";
-    }
+
 }

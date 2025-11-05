@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản trị viên - Danh sách giáo viên</title>
+    <link rel="stylesheet" href="/css/admin/teacherManage.css">
+
+</head>
+<body>
+<header class="header">
+    <button class="menu-btn">&#9776;</button>
+    <h1>Quản trị viên</h1>
+    <div class="logo">Logo</div>
+</header>
+
+<main class="container">
+    <section class="teacher-list-section">
+        <div class="section-header">
+            <h2>Danh sách giáo viên</h2>
+        </div>
+
+        <!-- 🔍 Thanh tìm kiếm -->
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <input type="text" id="keyword" placeholder="Tìm kiếm giáo viên...">
+                <button class="search-btn">🔍</button>
+            </div>
+        </div>
+
+        <!-- 🟣 Nút thêm -->
+        <div class="add-btn-container">
+            <button class="add-btn">+ Thêm giáo viên</button>
+        </div>
+
+        <!-- Bộ lọc -->
+        <div class="filter-box">
+            <span class="filter-title">Bộ lọc tìm kiếm</span>
+            <input type="text" id="filter-name" class="filter-input" placeholder="Tên giáo viên">
+            <input type="text" id="filter-phone" class="filter-input" placeholder="Số điện thoại">
+            <input type="text" id="filter-class" class="filter-input" placeholder="Phụ trách lớp">
+        </div>
+
+        <!-- Bảng -->
+        <div id="teacherTableContainer">
+            <table class="teacher-table">
+                <thead>
+                <tr>
+                    <th>Mã giáo viên</th>
+                    <th>Tên giáo viên</th>
+                    <th>Số điện thoại</th>
+                    <th>Phụ trách lớp</th>
+                    <th>Tên đăng nhập</th>
+                    <th>Mật khẩu</th>
+                    <th>Email</th>
+                    <th>Thời gian tạo</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody id="teacherTableBody">
+                <tr th:each="teacher : ${teachers}" th:attr="data-id=${teacher.id}">
+                    <td th:text="${teacher.id}">GV001</td>
+                    <td th:text="${teacher.full_name}">Nguyễn Văn A</td>
+                    <td th:text="${teacher.phone}">0123456789</td>
+                    <td th:text="${teacher.className}">12A1</td>
+                    <td th:text="${teacher.username}">nva</td>
+                    <td>******</td>
+                    <td th:text="${teacher.email}">abc@gmail.com</td>
+                    <td th:text="${#strings.substring(teacher.created_at, 0, 16)}"></td>
+                    <td class="actions">
+                        <a href="#" class="edit-btn">✏️</a>
+                        <button type="button" class="delete-btn" th:data-id="${teacher.id}">🗑️</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 🌸 Modal thêm/sửa -->
+    <div id="teacherFormModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="formTitle">Thêm giáo viên</h2>
+
+            <form id="teacherForm" th:action="@{/admin/teacher/save}" method="post">
+                <input type="hidden" id="teacherId" name="id">
+                <input type="text" id="teacherName" name="name" placeholder="Tên giáo viên" required>
+                <input type="text" id="teacherPhone" name="phone" placeholder="Số điện thoại" required>
+                <input type="email" id="teacherEmail" name="email" placeholder="Email" required>
+                <input type="text" id="teacherClass" name="className" placeholder="Phụ trách lớp">
+                <input type="text" id="teacherUsername" name="username" placeholder="Tên đăng nhập" readonly>
+                <input type="password" id="teacherPassword" name="password" placeholder="Mật khẩu">
+
+                <div class="form-buttons">
+                    <button type="button" id="cancelBtn">Hủy</button>
+                    <button type="submit" id="saveBtn">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${errorMessage != null}" class="error-message" id="errorMessageBox">
+        <p th:text="${errorMessage}"></p>
+    </div>
+</main>
+
+<script>
+    const nameInput = document.getElementById('filter-name');
+    const phoneInput = document.getElementById('filter-phone');
+    const classInput = document.getElementById('filter-class');
+    const tableBody = document.getElementById('teacherTableBody');
+
+    function fetchFilteredTeachers() {
+        const name = nameInput.value.toLowerCase();
+        const phone = phoneInput.value.toLowerCase();
+        const className = classInput.value.toLowerCase();
+
+        const rows = document.querySelectorAll('#teacherTableBody tr');
+        rows.forEach(row => {
+            const nameText = row.children[1].textContent.toLowerCase();
+            const phoneText = row.children[2].textContent.toLowerCase();
+            const classText = row.children[3].textContent.toLowerCase();
+
+            const match =
+                nameText.includes(name) &&
+                phoneText.includes(phone) &&
+                classText.includes(className);
+
+            row.style.display = match ? '' : 'none';
+        });
+    }
+
+    [nameInput, phoneInput, classInput].forEach(input => {
+        input.addEventListener('input', fetchFilteredTeachers);
+    });
+
+
+
+    // thêm/sửa
+    const modal = document.getElementById('teacherFormModal');
+    const form = document.getElementById('teacherForm');
+    const formTitle = document.getElementById('formTitle');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const addBtn = document.querySelector('.add-btn');
+
+    addBtn.addEventListener('click', () => {
+        form.reset();
+        document.getElementById('teacherId').value = '';
+        formTitle.textContent = 'Thêm giáo viên';
+        saveBtn.textContent = 'Thêm';
+        modal.classList.remove('hidden');
+    });
+
+    cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.preventDefault();
+            const row = btn.closest('tr');
+            document.getElementById('teacherId').value = row.dataset.id;
+            document.getElementById('teacherName').value = row.children[1].textContent;
+            document.getElementById('teacherPhone').value = row.children[2].textContent;
+            document.getElementById('teacherClass').value = row.children[3].textContent;
+            document.getElementById('teacherUsername').value = row.children[4].textContent;
+            document.getElementById('teacherEmail').value = row.children[6].textContent;
+
+            formTitle.textContent = 'Sửa giáo viên';
+            saveBtn.textContent = 'Lưu thay đổi';
+            modal.classList.remove('hidden');
+        });
+    });
+
+    // Sinh username + password
+    const teacherNameInput = document.getElementById('teacherName');
+    const usernameField = document.getElementById('teacherUsername');
+    const passwordField = document.getElementById('teacherPassword');
+
+    function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/đ/g, "d").replace(/Đ/g, "D");
+    }
+
+    function generateAccount(fullName) {
+        if (!fullName.trim()) {
+            usernameField.value = '';
+            passwordField.value = '';
+            return;
+        }
+        const parts = fullName.trim().split(/\s+/);
+        const first = removeAccents(parts[0].toLowerCase());
+        const last = removeAccents(parts[parts.length - 1].toLowerCase());
+        const middle = parts.length > 2 ? removeAccents(parts[1].toLowerCase()) : "";
+        usernameField.value = last + first.charAt(0) + (middle ? middle.charAt(0) : "");
+        passwordField.value = first + last + "@123";
+    }
+
+    teacherNameInput.addEventListener('input', () => generateAccount(teacherNameInput.value));
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const errorMessageElement = document.getElementById("errorMessageBox");
+        if (errorMessageElement && errorMessageElement.textContent.trim() !== "") {
+            requestAnimationFrame(() => {
+                errorMessageElement.style.opacity = "1";
+            });
+            setTimeout(() => {
+                errorMessageElement.style.opacity = "0";
+                setTimeout(() => {
+                    errorMessageElement.style.display = "none";
+                }, 500);
+            }, 3000);
+        }
+    });
+    // xóa
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            if (confirm('Bạn có chắc chắn muốn xóa giáo viên này không?')) {
+                fetch(`/admin/teacher/delete/${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => response.text())
+                    .then(result => {
+                        if (result === 'success') {
+                            alert('Đã xóa thành công!');
+                            this.closest('tr').remove(); // xóa hàng khỏi bảng ngay
+                        } else {
+                            alert('Không thể xóa giáo viên.');
+                        }
+                    })
+                    .catch(error => {
+                        alert('Lỗi kết nối server!');
+                        console.error(error);
+                    });
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

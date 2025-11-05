@@ -35,7 +35,10 @@ public class ExamAnswerController {
     @GetMapping("/result/detail/{resultId}")
     public String viewResultDetail(@PathVariable Integer resultId, Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
+        if (user == null || user.getRole().equals("admin") || user.getRole().equals("teacher")) {
+            session.invalidate();
+            return "redirect:/login";
+        }
 
         var result = resultService.getResultById(resultId);
         List<ExamAnswer> examAnswers = examAnswerService.getExamAnswerDetails(resultId);
