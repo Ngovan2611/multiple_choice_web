@@ -15,10 +15,11 @@ public class HomeController {
     @GetMapping({"/home"})
     public String home(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "/user/index";
+        if (user == null || user.getRole().equals("admin") || user.getRole().equals("teacher")) {
+            session.invalidate();
+            return "user/index";
         }
         model.addAttribute("user", user);
-        return "/user/index";
+        return "user/index";
     }
 }

@@ -1,0 +1,165 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9fafc;
+    color: #333;
+    transition: filter 0.6s ease, background-color 0.6s ease;
+}
+
+header {
+    background-color: #fff;
+    padding: 12px 24px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 30;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.logo {
+    font-weight: bold;
+}
+
+.menu-container {
+    position: relative;
+    display: inline-block;
+    z-index: 40;
+}
+
+.menu-trigger {
+    font-size: 22px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    user-select: none;
+}
+
+.menu-trigger:hover {
+    background: #f3f0ff;
+    color: #5b21b6;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    width: 240px;
+    background: #ffffff;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+    padding: 8px 0;
+    transform: translateX(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
+    opacity 0.4s ease,
+    visibility 0.4s ease;
+}
+
+/* Khi hover vào ☰ → sidebar hiện ra */
+.menu-container:hover .sidebar {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ===== MENU ITEM ===== */
+.menu-item {
+    position: relative;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #333;
+    border-left: 4px solid transparent;
+    transition: all 0.25s;
+}
+
+.menu-item:hover {
+    background-color: #f3f0ff;
+    border-left: 4px solid #7c3aed;
+}
+
+/* ===== SUBMENU ===== */
+.submenu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 240px;
+    width: 200px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    padding: 4px 0;
+    z-index: 50;
+}
+
+.submenu a {
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #333;
+    display: block;
+    transition: background 0.2s;
+}
+
+.submenu a:hover {
+    background-color: #ede9fe;
+    color: #5b21b6;
+}
+
+.menu-item:hover .submenu {
+    display: flex;
+}
+
+/* ===== MAIN CONTENT ===== */
+main {
+    padding: 24px;
+    transition: filter 0.6s ease, opacity 0.6s ease;
+    z-index: 1;
+    position: relative;
+}
+
+/* Khi hover vào ☰ → làm mờ nền main */
+.menu-container:hover ~ main {
+    filter: blur(6px) brightness(0.9);
+    opacity: 0.85;
+}
+
+/* Khi hover vào ☰ → làm mờ nền body */
+.menu-container:hover ~ main::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(4px);
+    z-index: -1;
+}
+
+/* ===== LOGOUT BUTTON ===== */
+.logout-item {
+    border-top: 1px solid #eee;
+    margin-top: 6px;
+}
+
+.logout-item a {
+    display: block;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #e11d48;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+}
+
+.logout-item a:hover {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}

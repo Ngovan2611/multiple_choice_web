@@ -27,7 +27,8 @@ public class ResultController {
     @GetMapping("/history")
     public String history(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
-        if(user == null) {
+        if (user == null || user.getRole().equals("admin") || user.getRole().equals("teacher")) {
+            session.invalidate();
             return "redirect:/login";
         }
         List<Result> results = resultService.getResultsByUser(user);

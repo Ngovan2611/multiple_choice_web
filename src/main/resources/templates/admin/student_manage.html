@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản trị viên - Danh sách học sinh</title>
+    <link rel="stylesheet" href="/css/admin/teacherManage.css"> <!-- Giữ nguyên CSS -->
+</head>
+<body>
+<header class="header">
+    <button class="menu-btn">&#9776;</button>
+    <h1>Quản trị viên</h1>
+    <div class="logo">Logo</div>
+</header>
+
+<main class="container">
+    <section class="teacher-list-section">
+        <div class="section-header">
+            <h2>Danh sách học sinh</h2>
+        </div>
+
+        <!-- 🔍 Thanh tìm kiếm -->
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <input type="text" id="keyword" placeholder="Tìm kiếm học sinh...">
+                <button class="search-btn">🔍</button>
+            </div>
+        </div>
+
+        <!-- 🟣 Nút thêm -->
+        <div class="add-btn-container">
+            <button class="add-btn">+ Thêm học sinh</button>
+        </div>
+
+        <!-- Bộ lọc -->
+        <div class="filter-box">
+            <span class="filter-title">Bộ lọc tìm kiếm</span>
+            <input type="text" id="filter-name" class="filter-input" placeholder="Tên học sinh">
+            <input type="text" id="filter-phone" class="filter-input" placeholder="Số điện thoại">
+            <input type="text" id="filter-class" class="filter-input" placeholder="Lớp học">
+        </div>
+
+        <!-- Bảng -->
+        <div id="studentTableContainer">
+            <table class="teacher-table">
+                <thead>
+                <tr>
+                    <th>Mã học sinh</th>
+                    <th>Tên học sinh</th>
+                    <th>Số điện thoại</th>
+                    <th>Lớp</th>
+                    <th>Tên đăng nhập</th>
+                    <th>Mật khẩu</th>
+                    <th>Email</th>
+                    <th>Thời gian tạo</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                <tr th:each="student : ${students}" th:attr="data-id=${student.id}">
+                    <td th:text="${student.id}">HS001</td>
+                    <td th:text="${student.full_name}">Nguyễn Văn B</td>
+                    <td th:text="${student.phone}">0123456789</td>
+                    <td th:text="${student.className}">10A1</td>
+                    <td th:text="${student.username}">nvb</td>
+                    <td>******</td>
+                    <td th:text="${student.email}">hs@gmail.com</td>
+                    <td th:text="${#strings.substring(student.created_at, 0, 16)}"></td>
+                    <td class="actions">
+                        <a href="#" class="edit-btn">✏️</a>
+                        <button type="button" class="delete-btn" th:data-id="${student.id}">🗑️</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 🌸 Modal thêm/sửa -->
+    <div id="studentFormModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="formTitle">Thêm học sinh</h2>
+
+            <form id="studentForm" th:action="@{/admin/student/save}" method="post">
+                <input type="hidden" id="studentId" name="id">
+                <input type="text" id="studentName" name="name" placeholder="Tên học sinh" required>
+                <input type="text" id="studentPhone" name="phone" placeholder="Số điện thoại" required>
+                <input type="email" id="studentEmail" name="email" placeholder="Email" required>
+                <input type="text" id="studentClass" name="className" placeholder="Lớp học">
+                <input type="text" id="studentUsername" name="username" placeholder="Tên đăng nhập" readonly>
+                <input type="password" id="studentPassword" name="password" placeholder="Mật khẩu">
+
+                <div class="form-buttons">
+                    <button type="button" id="cancelBtn">Hủy</button>
+                    <button type="submit" id="saveBtn">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${errorMessage != null}" class="error-message" id="errorMessageBox">
+        <p th:text="${errorMessage}"></p>
+    </div>
+</main>
+
+<script>
+    // Bộ lọc
+    const nameInput = document.getElementById('filter-name');
+    const phoneInput = document.getElementById('filter-phone');
+    const classInput = document.getElementById('filter-class');
+
+    function fetchFilteredStudents() {
+        const name = nameInput.value.toLowerCase();
+        const phone = phoneInput.value.toLowerCase();
+        const className = classInput.value.toLowerCase();
+
+        document.querySelectorAll('#studentTableBody tr').forEach(row => {
+            const nameText = row.children[1].textContent.toLowerCase();
+            const phoneText = row.children[2].textContent.toLowerCase();
+            const classText = row.children[3].textContent.toLowerCase();
+
+            const match =
+                nameText.includes(name) &&
+                phoneText.includes(phone) &&
+                classText.includes(className);
+
+            row.style.display = match ? '' : 'none';
+        });
+    }
+
+    [nameInput, phoneInput, classInput].forEach(input => {
+        input.addEventListener('input', fetchFilteredStudents);
+    });
+
+    // thêm/sửa
+    const modal = document.getElementById('studentFormModal');
+    const form = document.getElementById('studentForm');
+    const formTitle = document.getElementById('formTitle');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const addBtn = document.querySelector('.add-btn');
+
+    addBtn.addEventListener('click', () => {
+        form.reset();
+        document.getElementById('studentId').value = '';
+        formTitle.textContent = 'Thêm học sinh';
+        saveBtn.textContent = 'Thêm';
+        modal.classList.remove('hidden');
+    });
+
+    cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.preventDefault();
+            const row = btn.closest('tr');
+            document.getElementById('studentId').value = row.dataset.id;
+            document.getElementById('studentName').value = row.children[1].textContent;
+            document.getElementById('studentPhone').value = row.children[2].textContent;
+            document.getElementById('studentClass').value = row.children[3].textContent;
+            document.getElementById('studentUsername').value = row.children[4].textContent;
+            document.getElementById('studentEmail').value = row.children[6].textContent;
+
+            formTitle.textContent = 'Sửa học sinh';
+            saveBtn.textContent = 'Lưu thay đổi';
+            modal.classList.remove('hidden');
+        });
+    });
+
+    // Sinh username + password
+    const studentNameInput = document.getElementById('studentName');
+    const usernameField = document.getElementById('studentUsername');
+    const passwordField = document.getElementById('studentPassword');
+
+    function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/đ/g, "d").replace(/Đ/g, "D");
+    }
+
+    function generateAccount(fullName) {
+        if (!fullName.trim()) {
+            usernameField.value = '';
+            passwordField.value = '';
+            return;
+        }
+        const parts = fullName.trim().split(/\s+/);
+        const first = removeAccents(parts[0].toLowerCase());
+        const last = removeAccents(parts[parts.length - 1].toLowerCase());
+        const middle = parts.length > 2 ? removeAccents(parts[1].toLowerCase()) : "";
+        usernameField.value = last + first.charAt(0) + (middle ? middle.charAt(0) : "");
+        passwordField.value = first + last + "@123";
+    }
+
+    studentNameInput.addEventListener('input', () => generateAccount(studentNameInput.value));
+
+    // Thông báo lỗi
+    document.addEventListener("DOMContentLoaded", function () {
+        const errorMessageElement = document.getElementById("errorMessageBox");
+        if (errorMessageElement && errorMessageElement.textContent.trim() !== "") {
+            requestAnimationFrame(() => errorMessageElement.style.opacity = "1");
+            setTimeout(() => {
+                errorMessageElement.style.opacity = "0";
+                setTimeout(() => {
+                    errorMessageElement.style.display = "none";
+                }, 500);
+            }, 3000);
+        }
+    });
+
+    // Xóa học sinh
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            if (confirm('Bạn có chắc chắn muốn xóa học sinh này không?')) {
+                fetch(`/admin/student/delete/${id}`, { method: 'DELETE' })
+                    .then(response => response.text())
+                    .then(result => {
+                        if (result === 'success') {
+                            alert('Đã xóa thành công!');
+                            this.closest('tr').remove();
+                        } else {
+                            alert('Không thể xóa học sinh.');
+                        }
+                    })
+                    .catch(error => {
+                        alert('Lỗi kết nối server!');
+                        console.error(error);
+                    });
+            }
+        });
+    });
+</script>
+</body>
+</html>
