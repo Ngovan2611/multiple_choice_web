@@ -41,13 +41,15 @@ public class LoginController {
         session.setAttribute("user", user);
 
         switch (user.getRole()) {
-            case "admin":
+            case "admin" -> {
                 return "redirect:/admin/home";
-            case "teacher":
+            }
+            case "teacher" -> {
                 return "redirect:/teacher/home";
-            case "user":
-            default:
+            }
+            default -> {
                 return "redirect:/home";
+            }
         }
 
     }
