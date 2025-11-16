@@ -10,23 +10,31 @@ import java.util.List;
 
 @Repository
 public interface ExamRepository extends JpaRepository<Exam, Integer> {
-    Exam findById(int id);
 
     @Query(value = """
-    SELECT e.*
-    FROM exams e
-    WHERE e.subject_id = :subjectId AND e.total_questions = :totalQuestions
-    ORDER BY RAND() LIMIT 1
-""", nativeQuery = true)
+        SELECT e.*
+        FROM exams e
+        WHERE e.subject_id = :subjectId 
+          AND e.total_questions = :totalQuestions
+        ORDER BY RAND() 
+        LIMIT 1
+    """, nativeQuery = true)
     Exam findRandomExamBySubjectAndQuestions(
             @Param("subjectId") Integer subjectId,
             @Param("totalQuestions") Integer totalQuestions
     );
 
-
     @Query("SELECT e FROM Exam e WHERE e.createdBy.role = 'teacher'")
     List<Exam> findAllByTeacherRole();
-    @Query(value = "SELECT e.* FROM Exam e JOIN Result r ON e.examId = r.examId WHERE r.resultId = :resultId", nativeQuery = true)
+
+    @Query(value = """
+        SELECT e.*
+        FROM exams e
+        JOIN results r ON e.exam_id = r.exam_id
+        WHERE r.result_id = :resultId
+    """, nativeQuery = true)
     Exam findExamByResultId(@Param("resultId") Integer resultId);
+    Exam findFirstBySubject_SubjectId(Integer subjectId);
 
 }
+

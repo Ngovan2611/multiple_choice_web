@@ -22,10 +22,14 @@ public class ExamService {
     public List<Exam> getExamByCreateBy() {
         return examRepository.findAllByTeacherRole();
     }
-    public Exam getExamById(Integer id) {
-        return examRepository.findById(id).get();
+    public Exam getExamById(Integer examId) {
+        return examRepository.findById(examId).get();
     }
     public Exam getExamByResultId(Integer resultId) {
         return examRepository.findExamByResultId(resultId);
     }
+    public Exam getExamBySubject(Integer subjectId) {
+        return examRepository.findFirstBySubject_SubjectId(subjectId);
+    }
+
 }
