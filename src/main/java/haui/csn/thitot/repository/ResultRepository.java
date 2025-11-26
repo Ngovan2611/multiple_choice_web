@@ -4,9 +4,11 @@ import haui.csn.thitot.entity.Result;
 import haui.csn.thitot.entity.User;
 import haui.csn.thitot.entity.Exam;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -51,4 +53,18 @@ public interface ResultRepository extends JpaRepository<Result, Integer> {
         WHERE r.resultId = :resultId
     """)
     Result findWithAnswersById(@Param("resultId") Integer resultId);
+    // Lấy tất cả kết quả theo ID đề thi
+    List<Result> findByExam_ExamId(Integer examId);
+    Long countByExam_ExamId(Integer examId);
+    @Query("SELECT AVG(r.score) FROM Result r WHERE r.exam.examId = ?1")
+    Double findAverageScoreByExamId(Integer examId);
+    // Tìm điểm cao nhất
+    @Query("SELECT MAX(r.score) FROM Result r WHERE r.exam.examId = ?1")
+    Double findMaxScoreByExamId(Integer examId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Result r WHERE r.exam.examId = ?1")
+    void deleteByExam_ExamId(Integer examId);
+
 }

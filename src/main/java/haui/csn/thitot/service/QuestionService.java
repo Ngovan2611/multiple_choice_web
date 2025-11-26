@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 public class QuestionService {
@@ -22,8 +21,8 @@ public class QuestionService {
     @Autowired
     private ExamRepository examRepository;
 
-    public List<Question> getAllQuestionsByExam_Id(int exam_id) {
-        return questionRepository.findByExam_ExamId(exam_id);
+  public List<Question> getAllQuestionsByExam_Id(int exam_id) {
+     return questionRepository.findByExam_ExamId(exam_id);
     }
 
     // Lấy tất cả câu hỏi
@@ -82,5 +81,4 @@ public class QuestionService {
         // Gọi phương thức Repository mới
         return questionRepository.findBySubject_SubjectIdAndQuestionTextContainingIgnoreCase(subjectId, keyword);
     }
-
 }

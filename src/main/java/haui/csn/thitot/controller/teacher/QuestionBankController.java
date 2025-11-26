@@ -3,7 +3,6 @@ package haui.csn.thitot.controller.teacher;
 
 import haui.csn.thitot.entity.*;
 import haui.csn.thitot.service.AnswerService;
-import haui.csn.thitot.service.ExamService;
 import haui.csn.thitot.service.QuestionService;
 import haui.csn.thitot.service.SubjectService;
 
@@ -28,12 +27,7 @@ public class QuestionBankController {
     @Autowired
     private SubjectService subjectService;
 
-    @Autowired
-    private ExamService examService;
-
-    // --------------------------------------------------
     // HIỂN THỊ TRANG NGÂN HÀNG CÂU HỎI
-    // --------------------------------------------------
     @GetMapping
     public String listQuestions(@RequestParam(required = false) Integer subjectId,
                                 @RequestParam(required = false) String keyword,
@@ -51,26 +45,17 @@ public class QuestionBankController {
 
         List<Question> questions = null;
 
-        // Chuẩn hóa Keyword (Nếu keyword chỉ là khoảng trắng)
         boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
 
         if (subjectId != null) {
-            // TRƯỜNG HỢP A: LỌC THEO MÔN HỌC (VÀ CÓ THỂ KẾT HỢP TÌM KIẾM)
             if (hasKeyword) {
-                // A1: Có Môn học VÀ Có Từ khóa -> Tìm kiếm trong phạm vi môn học
-                // Bạn cần tạo phương thức này trong QuestionService
                 questions = questionService.searchQuestionsBySubjectAndKeyword(subjectId, keyword.trim());
             } else {
-                // A2: Chỉ có Môn học -> Lấy tất cả câu hỏi của môn đó
                 questions = questionService.getQuestionsBySubject(subjectId);
             }
         } else if (hasKeyword) {
-            // TRƯỜNG HỢP B: CHỈ CÓ TỪ KHÓA (Tìm kiếm trên toàn bộ ngân hàng)
             questions = questionService.search(keyword.trim());
         } else {
-            // TRƯỜNG HỢP C: Không có tham số nào -> Không hiển thị hoặc hiển thị tất cả
-            // Tùy theo logic bạn muốn, nếu muốn tối ưu tốc độ, nên để questions = Collections.emptyList();
-            // Giữ lại logic hiện tại của bạn:
             questions = questionService.getAllQuestions();
         }
 
@@ -79,10 +64,7 @@ public class QuestionBankController {
         return "teacher/question_bank";
     }
 
-
-    // --------------------------------------------------
     // TẠO CÂU HỎI (POPUP)
-    // --------------------------------------------------
     @PostMapping("/create")
     public String createQuestion(@RequestParam Integer subjectId,
                                  @RequestParam String questionText,
@@ -101,9 +83,7 @@ public class QuestionBankController {
     }
 
 
-    // --------------------------------------------------
     // LẤY DỮ LIỆU 1 CÂU HỎI (AJAX - DETAIL + EDIT)
-    // --------------------------------------------------
     @GetMapping("/api/question/{id}")
     @ResponseBody
     public Question getQuestionById(@PathVariable Integer id) {
@@ -111,9 +91,7 @@ public class QuestionBankController {
     }
 
 
-    // --------------------------------------------------
     // CẬP NHẬT CÂU HỎI (POPUP)
-    // --------------------------------------------------
     @PostMapping("/update")
     public String updateQuestion(@RequestParam Integer questionId,
                                  @RequestParam String questionText,
@@ -142,7 +120,6 @@ public class QuestionBankController {
 
         Question q = questionService.getQuestionById(id);
 
-        // Kiểm tra câu hỏi có tồn tại không
         if (q == null) {
             return "redirect:/teacher/question_bank";
         }
@@ -150,14 +127,11 @@ public class QuestionBankController {
         Integer subjectId = q.getSubject().getSubjectId();
 
         try {
-            // Hibernate sẽ tự động xóa Answer nhờ CascadeType.ALL
             questionService.delete(id);
         } catch (Exception e) {
             System.err.println("Lỗi khi xóa câu hỏi: " + e.getMessage());
-            // Nếu lỗi xảy ra (ví dụ: vẫn còn ràng buộc phức tạp), chuyển hướng về trang lỗi
         }
 
-        // Chuyển hướng về trang môn học cũ
         return "redirect:/teacher/question_bank?subjectId=" + subjectId;
     }
 }

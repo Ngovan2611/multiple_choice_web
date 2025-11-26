@@ -107,6 +107,7 @@
             background: rgba(0,0,0,0.4);
             justify-content: center;
             align-items: center;
+            overflow-y: auto;
         }
 
         .modal {
@@ -115,6 +116,8 @@
             padding: 20px 30px;
             border-radius: 12px;
             box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal h3 {
@@ -146,23 +149,28 @@
             color: white;
         }
         .teacher-header {
-            background: #7a5cf4;
+            background-color: #7a5cf4;
             color: white;
-            padding: 15px 50px;
+            padding: 15px 40px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(122, 92, 244, 0.3);
             margin-bottom:20px;
         }
-
-        .teacher-header h1 span {
-            color: #ffe36d;
-        }
-
+        .teacher-header h1 { margin: 0; font-size: 24px;color:white; }
+        .teacher-header h1 span { color: #ffe36d; }
         .menu a {
             color: white;
-            margin-left: 25px;
+            margin-left: 30px;
             text-decoration: none;
             font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+        .menu a:hover { opacity: 1; }
+        a{
+            text-decoration: none;
         }
         .detail-display-box {
             display: block;
@@ -171,20 +179,19 @@
             margin: 5px 0 10px 0;
             border-radius: 6px;
             border: 1px solid #ccc;
-            min-height: 20px; /* Chiều cao tối thiểu */
+            min-height: 20px;
             box-sizing: border-box;
-            background-color: #f9f9f9; /* Màu nền nhẹ cho chế độ chỉ xem */
+            background-color: #f9f9f9;
         }
         .detail-textarea-style {
             min-height: 60px;
         }
         .detail-correct-box {
-            /* Highlight đáp án đúng */
             display: inline-block;
             padding: 5px 10px;
             font-weight: bold;
             color: white;
-            background-color: #38b466; /* Màu xanh lá cây */
+            background-color: #38b466;
             border-radius: 4px;
             margin-top: 5px;
         }
@@ -193,13 +200,13 @@
 
 <body>
 <header class="teacher-header">
-    <h1>Thi<span>Tot</span></h1>
+    <a href="/teacher/home">
+        <h1>Thi<span>Tot</span></h1>
+    </a>
     <nav class="menu">
-        <a href="/teacher/home">Trang chủ</a>
-        <a href="/teacher/question_bank">Ngân hàng câu hỏi</a>
+        <a href="/teacher/question_bank" style="opacity: 1; border-bottom: 2px solid white; padding-bottom: 5px;">Ngân hàng câu hỏi</a>
         <a href="/teacher/exam">Đề thi</a>
         <a href="/teacher/class">Lớp học</a>
-        <a href="/teacher/report">Thống kê</a>
         <a href="/teacher/profile">Thông tin cá nhân</a>
         <a href="/logout">Đăng xuất</a>
     </nav>
@@ -224,7 +231,6 @@
         </select>
     </form>
 
-    <!-- Mở popup tạo câu hỏi (nếu đã chọn môn) -->
     <button th:if="${selectedSubject != null}"
             class="btn btn-blue"
             th:onclick="'openCreateModal(' + ${selectedSubject} + ')'"
@@ -415,20 +421,17 @@
 
     /* ======== DETAIL ======== */
     function openDetailModal(id) {
-        // Gọi API để lấy dữ liệu Question (bao gồm Answer và Subject nếu fetch là EAGER)
         fetch("/teacher/question_bank/api/question/" + id)
             .then(r => {
                 if (!r.ok) {
                     throw new Error(`HTTP error! status: ${r.status}`);
                 }
-                // Thử chuyển đổi phản hồi thành JSON
                 return r.json();
             })
             .then(q => {
                 // --- 1. Hiển thị thông tin cơ bản ---
                 document.getElementById("detail-text").innerText = q.questionText || 'Nội dung trống';
 
-                // Xử lý Môn học (Kiểm tra q.subject trước)
                 if (q.subject && q.subject.subjectName) {
                     document.getElementById("detail-subject-name").innerText = q.subject.subjectName;
                 } else {
@@ -472,7 +475,6 @@
         document.getElementById("detailModal").style.display = "none";
     }
 
-    /* ======== EDIT ======== */
     /* ======== EDIT ======== */
     function openEditModal(id) {
         fetch("/teacher/question_bank/api/question/" + id)

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +21,7 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subject_id", nullable = false)
-    private Subject subject; // 🔹 Liên kết đến môn học
+    private Subject subject; //
 
     @Column(name = "question_text", nullable = false, columnDefinition = "TEXT")
     private String questionText;
@@ -32,10 +33,11 @@ public class Question {
     private Answer answer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exam_id",nullable = true)
+    @JoinColumn(name = "exam_id",
+            nullable = true,
+            updatable = true)
     @JsonIgnore
     private Exam exam;
-
 
     public Question(Subject subject, String questionText, String imageUrl) {
         this.subject = subject;
