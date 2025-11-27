@@ -18,6 +18,6 @@ public class TeacherHomeController {
         }
 
         model.addAttribute("teacher", user);
-        return "teacher/index"; // ✅ HIỂN THỊ FILE templates/teacher/home.html
+        return "teacher/index";
     }
 }

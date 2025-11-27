@@ -20,11 +20,11 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer resultId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "exam_id", nullable = false)
     private Exam exam;
 

@@ -13,11 +13,9 @@ public class ProfileController {
     @GetMapping("/teacher/profile")
     public String viewProfile(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
-
         if (user == null || !user.getRole().equals("teacher")) {
             return "redirect:/login";
         }
-
         model.addAttribute("teacher", user);
         model.addAttribute("editMode", false);
         return "teacher/profile";
@@ -26,11 +24,9 @@ public class ProfileController {
     @GetMapping("/teacher/profile/edit")
     public String editProfile(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
-
         if (user == null || !user.getRole().equals("teacher")) {
             return "redirect:/login";
         }
-
         model.addAttribute("teacher", user);
         model.addAttribute("editMode", true);
         return "teacher/profile";
@@ -47,9 +43,6 @@ public class ProfileController {
         if (form.getPassword() != null && !form.getPassword().isEmpty()) {
             teacher.setPassword(form.getPassword());
         }
-
-        // Nếu dùng repository:
-        // userRepository.save(teacher);
 
         session.setAttribute("user", teacher);
 

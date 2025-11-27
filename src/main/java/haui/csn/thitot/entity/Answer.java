@@ -28,10 +28,9 @@ public class Answer {
 
 
     @OneToOne
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "question_id", nullable = false)
     @JsonIgnore
     private Question question;
-    ;
 
     @Column(name = "is_correct", length = 10)
     private String isCorrect;

@@ -1,0 +1,108 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff;
+}
+
+/* Header */
+.teacher-header {
+    background: #7a5cf4;
+    color: white;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.teacher-header h1 span {
+    color: #ffe36d;
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 500;
+}
+
+/* Title */
+.title-box {
+    display: flex;
+    align-items: center;
+    background: #dcedff;
+    padding: 14px 30px;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+}
+
+.title-box i {
+    margin-right: 10px;
+}
+
+/* Môn học */
+.subject-section {
+    text-align: center;
+    padding: 25px;
+    background: #8fffa5;
+}
+
+.btn-create {
+    display: inline-block;
+    padding: 10px 25px;
+    background: #0088ff;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+/* Search */
+.search-section {
+    padding: 20px;
+    text-align: center;
+}
+
+.search-section input {
+    width: 350px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.btn-search {
+    padding: 10px 20px;
+    margin-left: 10px;
+    background: #7a5cf4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Table */
+.table-section {
+    padding: 20px 40px;
+}
+
+.table-section table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-section th,
+.table-section td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.icon-cell i {
+    font-size: 22px;
+    cursor: pointer;
+    color: #444;
+}
+
+.icon-cell i:hover {
+    color: #7a5cf4;
+}

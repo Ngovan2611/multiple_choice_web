@@ -29,4 +29,7 @@ public class SubjectService {
     public void deleteById(int id) {
         subjectRepository.deleteById(id);
     }
+    public Subject findById(Integer id) {
+        return subjectRepository.findById(id).orElse(null);
+    }
 }
