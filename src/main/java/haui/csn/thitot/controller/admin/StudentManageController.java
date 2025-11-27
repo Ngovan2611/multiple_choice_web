@@ -15,8 +15,6 @@ public class StudentManageController {
 
     @Autowired
     private UserService userService;
-
-    // 📘 Danh sách học sinh
     @GetMapping("/admin/student_manage")
     public String studentManage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");

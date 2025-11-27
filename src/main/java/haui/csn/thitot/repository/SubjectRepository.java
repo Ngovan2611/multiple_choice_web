@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface SubjectRepository extends JpaRepository<Subject, Integer> {
     Optional<Subject> findById(Integer id);
+
 }

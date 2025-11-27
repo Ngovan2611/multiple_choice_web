@@ -10,9 +10,16 @@ import java.util.List;
 
 @Service
 public class QuestionService {
+
     @Autowired
     private QuestionRepository questionRepository;
+
     public List<Question> getAllQuestionsByExam_Id(int exam_id) {
         return questionRepository.findByExam_ExamId(exam_id);
     }
+
+    public List<Question> getAllBySubject_Id(int subject_id) {
+        return questionRepository.findBySubjectId(subject_id);
+    }
 }
+
