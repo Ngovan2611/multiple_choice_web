@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gán Câu Hỏi - Đề thi</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+
+    <style>
+        /* Sử dụng lại style header từ exam.html */
+        body { margin: 0; font-family: Arial, sans-serif; background: #f4f4f4; }
+        .teacher-header {
+            background: #7a5cf4;
+            color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .teacher-header h1 span { color: #ffe36d; }
+        .menu a {
+            color: white;
+            margin-left: 25px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Container chính */
+        .main-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Tiêu đề */
+        .exam-info h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 24px;
+        }
+        .exam-info p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #e1e1e1;
+            text-align: center;
+        }
+        td:nth-child(1), td:nth-child(2), td:last-child {
+            text-align: center;
+        }
+
+        /* Checkbox */
+        .question-checkbox {
+            transform: scale(1.5); /* Tăng kích thước checkbox */
+            margin: 0;
+        }
+
+        /* Nút Lưu */
+        .btn-submit {
+            background: #28a745; /* Màu xanh lá cây */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .btn-finish {
+            background: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+        .action-icon {
+            color: #7a5cf4;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Modal Chi tiết (Để xem nội dung câu hỏi) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .detail-modal {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .detail-modal h3 { border-bottom: 2px solid #7a5cf4; padding-bottom: 10px; }
+        .detail-modal button {
+            background: #7a5cf4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        .answer-option { margin-bottom: 8px; padding: 5px; border-radius: 4px; }
+        .correct-answer { background-color: #d4edda; color: #155724; font-weight: bold; }
+        .question-image { max-width: 100%; height: auto; margin-top: 15px; border-radius: 8px; }
+    </style>
+</head>
+
+<body>
+<header class="teacher-header">
+    <h1>Thi<span>Tot</span></h1>
+    <nav class="menu">
+        <a href="/teacher/home">Trang chủ</a>
+        <a href="/teacher/question_bank">Ngân hàng câu hỏi</a>
+        <a th:href="@{/teacher/exam}">Đề thi</a>
+        <a href="/teacher/class">Lớp học</a>
+        <a href="/teacher/profile">Thông tin cá nhân</a>
+        <a href="/logout">Đăng xuất</a>
+    </nav>
+</header>
+
+<div class="main-container">
+    <div class="exam-info">
+        <h2>Gán Câu Hỏi Cho Đề Thi</h2>
+        <p><strong>Đề thi:</strong> <span th:text="${exam.examName}"></span> |
+            <strong>Môn học:</strong> <span th:text="${exam.subject.subjectName}"></span> |
+            <strong>Thời lượng:</strong> <span th:text="${exam.duration + ' phút'}"></span> |
+            <strong>Số câu đã chọn:</strong> <span th:text="${exam.totalQuestions}"></span>
+        </p>
+    </div>
+
+    <form method="post" th:action="@{/teacher/exam/save_questions/{id}(id=${exam.examId})}">
+
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 5%;">Chọn</th>
+                <th style="width: 5%;">ID</th>
+                <th style="width: 70%;">Nội dung Câu hỏi</th>
+                <th style="width: 10%;">Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="q : ${questions}">
+                <td>
+                    <input type="checkbox"
+                           class="question-checkbox"
+                           name="questionIds"
+                           th:value="${q.questionId}"
+                           th:checked="${#sets.contains(selectedQuestionIds, q.questionId)}">
+                </td>
+                <td th:text="${q.questionId}"></td>
+
+                <td>
+                    <th:block th:with="maxLength=(${#strings.length(q.questionText) > 100} ? 100 : ${#strings.length(q.questionText)})">
+
+        <span th:text="${#strings.substring(q.questionText, 0, maxLength)
+                         + (#strings.length(q.questionText) > 100 ? '...' : '')}">
+            Nội dung câu hỏi được cắt ngắn.
+        </span>
+                    </th:block>
+                </td>
+
+                <td class="action-icons">
+                    <i class='bx bx-search-alt-2 action-icon'
+                       th:onclick="|openDetailModal(${q.questionId})|"
+                       title="Xem chi tiết nội dung và đáp án">
+                    </i>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: right; margin-top: 30px;">
+            <button type="submit" class="btn-submit">
+                <i class='bx bx-save'></i> Lưu Các Câu Hỏi Đã Chọn
+            </button>
+            <a th:href="@{/teacher/exam}" class="btn-finish">
+                <i class='bx bx-check-circle'></i> Hoàn Tất & Quay Lại
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="modal-overlay" id="detailModal" onclick="closeDetailModal()">
+    <div class="detail-modal" onclick="event.stopPropagation()">
+        <h3>Chi Tiết Câu Hỏi #<span id="detail-id"></span></h3>
+        <p><strong>Nội dung:</strong></p>
+        <p id="detail-text"></p>
+        <img id="detail-image" class="question-image" style="display: none;" alt="Hình ảnh câu hỏi"/>
+
+        <h4>Đáp án:</h4>
+        <div id="answers-container">
+        </div>
+
+        <button type="button" onclick="closeDetailModal()">Đóng</button>
+    </div>
+</div>
+</body>
+<script>
+    /* ======== MODAL XEM CHI TIẾT ======== */
+    function openDetailModal(id) {
+        // Gọi API để lấy dữ liệu chi tiết câu hỏi (Question và Answer)
+        fetch("/teacher/question_bank/api/question/" + id)
+            .then(response => response.json())
+            .then(q => {
+                // Điền thông tin cơ bản
+                document.getElementById("detail-id").innerText = q.questionId;
+                document.getElementById("detail-text").innerText = q.questionText;
+
+                // Xử lý hình ảnh
+                if (q.imageUrl) {
+                    document.getElementById("detail-image").src = q.imageUrl;
+                    document.getElementById("detail-image").style.display = "block";
+                } else {
+                    document.getElementById("detail-image").style.display = "none";
+                }
+
+                // Xử lý đáp án
+                const answersContainer = document.getElementById("answers-container");
+                answersContainer.innerHTML = ''; // Xóa nội dung cũ
+
+                if (q.answer) {
+                    const ans = q.answer;
+                    const options = [
+                        { label: 'A', text: ans.answerA },
+                        { label: 'B', text: ans.answerB },
+                        { label: 'C', text: ans.answerC },
+                        { label: 'D', text: ans.answerD }
+                    ];
+
+                    options.forEach(option => {
+                        const div = document.createElement('div');
+                        div.className = 'answer-option';
+                        div.innerHTML = `<strong>${option.label}.</strong> ${option.text}`;
+
+                        // Đánh dấu đáp án đúng
+                        if (option.label === ans.isCorrect) {
+                            div.classList.add('correct-answer');
+                            div.innerHTML += ' <i class="bx bx-check-circle"></i> (Đúng)';
+                        }
+                        answersContainer.appendChild(div);
+                    });
+                } else {
+                    answersContainer.innerHTML = '<p>Không tìm thấy thông tin đáp án cho câu hỏi này.</p>';
+                }
+
+                document.getElementById("detailModal").style.display = "flex";
+            })
+            .catch(error => console.error('Lỗi khi tải chi tiết câu hỏi:', error));
+    }
+
+    function closeDetailModal() {
+        document.getElementById("detailModal").style.display = "none";
+    }
+
+</script>
+</html>

@@ -15,4 +15,7 @@ public class SubjectService {
     public List<Subject> getAll() {
         return subjectRepository.findAll();
     }
+    public Subject findById(Integer id) {
+        return subjectRepository.findById(id).orElse(null);
+    }
 }
