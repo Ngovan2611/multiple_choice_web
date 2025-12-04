@@ -14,15 +14,22 @@ import java.util.List;
 
 @Service
 public class QuestionService {
+
     @Autowired
     private QuestionRepository questionRepository;
+
+
     @Autowired
     private SubjectRepository subjectRepository;
     @Autowired
     private ExamRepository examRepository;
 
-  public List<Question> getAllQuestionsByExam_Id(int exam_id) {
+    public List<Question> getAllQuestionsByExam_Id(int exam_id) {
      return questionRepository.findByExam_ExamId(exam_id);
+    }
+
+    public List<Question> getAllBySubject_Id(int subject_id) {
+        return questionRepository.findBySubjectId(subject_id);
     }
 
     // Lấy tất cả câu hỏi
@@ -48,7 +55,6 @@ public class QuestionService {
         return questionRepository.findById(id).orElse(null);
     }
 
-    // Tạo câu hỏi mới
     public Question createQuestion(Integer subjectId, String text, String imageUrl) {
 
         Subject subject = subjectRepository.findById(subjectId)
@@ -82,3 +88,4 @@ public class QuestionService {
         return questionRepository.findBySubject_SubjectIdAndQuestionTextContainingIgnoreCase(subjectId, keyword);
     }
 }
+

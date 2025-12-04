@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
@@ -26,12 +27,9 @@ public class Subject {
 
     private String imageUrl;
 
-    @Column(name = "created_by")
-    private int createdBy;
-
+    @CreationTimestamp
     @Column(name = "created_at")
     private Date createdAt;
-
 
 }
 

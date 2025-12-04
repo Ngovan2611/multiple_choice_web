@@ -4,11 +4,41 @@
     <meta charset="UTF-8">
     <title>Quản trị viên - Danh sách giáo viên</title>
     <link rel="stylesheet" href="/css/admin/teacherManage.css">
-
+    <link rel="stylesheet" href="/css/admin/index.css">
 </head>
 <body>
-<header class="header">
-    <button class="menu-btn">&#9776;</button>
+<header>
+    <div class="menu-container">
+        <div class="menu-trigger">☰</div>
+
+        <div class="sidebar">
+            <div class="menu-item">
+                Quản lý người dùng
+                <div class="submenu">
+                    <a th:href="@{/admin/student_manage}">Quản lý học sinh</a>
+                    <a th:href="@{/admin/teacher_manage}">Quản lý giáo viên</a>
+                </div>
+            </div>
+
+
+            <div class="menu-item">
+                <a th:href="@{/admin/subject_manage}" style="text-decoration:none; color:inherit;">Quản lý môn học</a>
+            </div>
+            <div class="menu-item">
+                <a th:href="@{/admin/exam_manage}" style="text-decoration:none; color:inherit;">Quản lý đề thi</a>
+            </div>
+            <div class="menu-item">
+                <a th:href="@{/admin/questions}" style="text-decoration:none; color:inherit;">Quản lý câu hỏi</a>
+            </div>
+            <div class="menu-item">
+                <a th:href="@{/admin/statistics}" style="text-decoration:none; color:inherit;">Thống kê / Báo cáo</a>
+            </div>
+            <div class="logout-item">
+                <a th:href="@{/logout}">Đăng xuất</a>
+            </div>
+        </div>
+    </div>
+
     <h1>Quản trị viên</h1>
     <div class="logo">Logo</div>
 </header>
@@ -19,20 +49,12 @@
             <h2>Danh sách giáo viên</h2>
         </div>
 
-        <!-- 🔍 Thanh tìm kiếm -->
-        <div class="search-bar-container">
-            <div class="search-bar">
-                <input type="text" id="keyword" placeholder="Tìm kiếm giáo viên...">
-                <button class="search-btn">🔍</button>
-            </div>
-        </div>
 
-        <!-- 🟣 Nút thêm -->
+
         <div class="add-btn-container">
             <button class="add-btn">+ Thêm giáo viên</button>
         </div>
 
-        <!-- Bộ lọc -->
         <div class="filter-box">
             <span class="filter-title">Bộ lọc tìm kiếm</span>
             <input type="text" id="filter-name" class="filter-input" placeholder="Tên giáo viên">

@@ -6,121 +6,7 @@
   <title>Thi Tot</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/main.css">
-  <style>
-    .news-section {
-      padding: 60px 8%;
-      background: #fafafa;
-      margin-top: 60px;
-    }
 
-    .news-title {
-      font-size: 28px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 30px;
-      color: #222;
-    }
-
-    .news-container {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr 0.8fr;
-      gap: 30px;
-    }
-
-    .news-card {
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-    }
-
-    .news-card:hover {
-      transform: translateY(-4px);
-    }
-
-    .news-card img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .news-info {
-      padding: 15px 18px;
-    }
-
-    .news-info h3,
-    .news-info h2 {
-      font-weight: 600;
-      margin: 10px 0 6px;
-      color: #222;
-      line-height: 1.4;
-    }
-
-    .news-info p {
-      font-size: 14px;
-      color: #555;
-      line-height: 1.5;
-    }
-
-    .category {
-      font-size: 13px;
-      font-weight: 600;
-      color: #0077cc;
-      text-transform: uppercase;
-    }
-
-    .category.highlight {
-      color: #d93f21;
-    }
-
-    .news-left .news-card {
-      margin-bottom: 25px;
-    }
-
-    .news-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .news-list li {
-      margin-bottom: 20px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
-    }
-
-    .news-list li a {
-      display: block;
-      font-size: 15px;
-      font-weight: 500;
-      color: #222;
-      text-decoration: none;
-      line-height: 1.4;
-    }
-
-    .news-list li a:hover {
-      color: #0077cc;
-    }
-
-    .news-list .date {
-      display: block;
-      font-size: 13px;
-      color: #888;
-      margin-top: 4px;
-    }
-
-    /* Responsive */
-    @media (max-width: 992px) {
-      .news-container {
-        grid-template-columns: 1fr;
-      }
-      .news-left, .news-center, .news-right {
-        width: 100%;
-      }
-    }
-
-  </style>
 </head>
 
 <body>
@@ -130,10 +16,10 @@
   </a>
   <nav class="menu">
     <ul>
-      <li><a href="/profile">Thông tin cá nhân</a></li>
-      <li><a href="/exam">Đề thi</a></li>
-      <li><a href="/subject">Luyện tập</a></li>
-      <li><a href="/history">Lịch sử thi</a></li>
+      <li th:if="${user != null}"><a href="/profile">Thông tin cá nhân</a></li>
+      <li th:if="${user != null}"><a href="/exam">Đề thi</a></li>
+      <li th:if="${user != null}"><a href="/subject">Luyện tập</a></li>
+      <li th:if="${user != null}"><a href="/history">Lịch sử thi</a></li>
       <li th:if="${user != null}"><a href="/logout">Đăng xuất</a></li>
       <li th:unless="${user != null}"><a href="/login">Đăng nhập</a></li>
     </ul>

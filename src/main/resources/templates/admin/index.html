@@ -17,17 +17,17 @@
             <div class="menu-item">
                 Quản lý người dùng
                 <div class="submenu">
-                    <a href="/admin/student_manage">Quản lý học sinh</a>
-                    <a href="/admin/teacher_manage">Quản lý giáo viên</a>
+                    <a th:href="@{/admin/student_manage}">Quản lý học sinh</a>
+                    <a th:href="@{/admin/teacher_manage}">Quản lý giáo viên</a>
                 </div>
             </div>
 
 
             <div class="menu-item">
-                <a th:href="@{/admin/questions}" style="text-decoration:none; color:inherit;">Quản lý môn học</a>
+                <a th:href="@{/admin/subject_manage}" style="text-decoration:none; color:inherit;">Quản lý môn học</a>
             </div>
             <div class="menu-item">
-                <a th:href="@{/admin/exams}" style="text-decoration:none; color:inherit;">Quản lý đề thi</a>
+                <a th:href="@{/admin/exam_manage}" style="text-decoration:none; color:inherit;">Quản lý đề thi</a>
             </div>
             <div class="menu-item">
                 <a th:href="@{/admin/questions}" style="text-decoration:none; color:inherit;">Quản lý câu hỏi</a>

@@ -1,13 +1,26 @@
 package haui.csn.thitot.service;
+import haui.csn.thitot.entity.Question;
 
 
-import haui.csn.thitot.entity.*;
-import haui.csn.thitot.repository.*;
-import org.apache.poi.ss.usermodel.*;
+import haui.csn.thitot.entity.Exam;
+import haui.csn.thitot.entity.Result;
+import haui.csn.thitot.entity.Subject;
+import haui.csn.thitot.entity.User;
+import haui.csn.thitot.repository.ExamRepository;
+import haui.csn.thitot.repository.QuestionRepository;
+import haui.csn.thitot.repository.ResultRepository;
+import haui.csn.thitot.repository.SubjectRepository;
+import haui.csn.thitot.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,6 +55,19 @@ public class ExamService {
     public Exam getExamByResultId(Integer resultId) {
         return examRepository.findExamByResultId(resultId);
     }
+    public List<Exam> getAll() {
+        return examRepository.findAll();
+    }
+    @Transactional
+    public void addQuestionsToExam(Integer examId, List<Integer> questionIds) {
+        for (Integer qId : questionIds) {
+            examRepository.insert(examId, qId);
+        }
+    }
+    public void save(Exam exam) {
+        examRepository.save(exam);
+    }
+
     public Exam getExamBySubject(Integer subjectId) {
         return examRepository.findFirstBySubject_SubjectId(subjectId);
     }
@@ -210,7 +236,7 @@ public class ExamService {
                     row.createCell(4).setCellValue("Chưa nộp");
                 }
             }
-            
+
             for(int i=0; i<columns.length; i++) {
                 sheet.autoSizeColumn(i);
             }

@@ -19,6 +19,10 @@ public class Question {
     @Column(name = "question_id")
     private Integer questionId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exam_id", nullable = false)
+    @JsonIgnore
+    private Exam exam;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject; //
@@ -32,12 +36,7 @@ public class Question {
     @OneToOne(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Answer answer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exam_id",
-            nullable = true,
-            updatable = true)
-    @JsonIgnore
-    private Exam exam;
+
 
     public Question(Subject subject, String questionText, String imageUrl) {
         this.subject = subject;

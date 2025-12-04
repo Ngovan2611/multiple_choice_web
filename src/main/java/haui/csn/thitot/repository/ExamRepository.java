@@ -36,6 +36,9 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
         WHERE r.result_id = :resultId
     """, nativeQuery = true)
     Exam findExamByResultId(@Param("resultId") Integer resultId);
+    @Modifying
+    @Query(value = "INSERT INTO exam_question (exam_id, question_id) VALUES (:examId, :questionId)", nativeQuery = true)
+    void insert(@Param("examId") Integer examId, @Param("questionId") Integer questionId);
     Exam findFirstBySubject_SubjectId(Integer subjectId);
     // Tìm tất cả đề thi được tạo bởi một User ID cụ thể
     List<Exam> findByCreatedBy_Id(Integer userId);
@@ -55,4 +58,3 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
 
 
 }
-
