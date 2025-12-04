@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class ExamManageController {
@@ -32,19 +29,18 @@ public class ExamManageController {
     private ExamService examService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private QuestionService questionService;
 
     @Autowired
     private SubjectService subjectService;
+
     @GetMapping("admin/exam_manage")
     public String examManage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user != null && "admin".equals(user.getRole())) {
             List<Exam> exams = examService.getAll();
             model.addAttribute("exams", exams);
+            model.addAttribute("subjects", subjectService.getAll());
             return "admin/exam_manage";
         }
         session.invalidate();
@@ -54,7 +50,7 @@ public class ExamManageController {
     @GetMapping("/admin/questions/by-subject/{subjectId}")
     @ResponseBody
     public List<Map<String, Object>> getQuestionsBySubject(@PathVariable Integer subjectId) {
-        List<Question> questions = questionService.getAllBySubject_Id(subjectId);
+        List<Question> questions = questionService.getFreeQuestionsBySubject(subjectId);
 
         return questions.stream().map(q -> {
             Map<String, Object> data = new HashMap<>();
@@ -76,37 +72,58 @@ public class ExamManageController {
 
     @PostMapping("/admin/exams/save-full")
     public String saveExam(
-            @RequestParam Integer subjectId,   // ✅ BẮT BUỘC PHẢI CÓ
+            @RequestParam(required = false) Integer examId, // Thêm ID để biết là Sửa hay Thêm
+            @RequestParam Integer subjectId,
             @RequestParam String title,
             @RequestParam String description,
             @RequestParam int questionCount,
             @RequestParam int duration,
-            @RequestParam List<Integer> questionIds,
+            @RequestParam(required = false) List<Integer> questionIds, // Có thể rỗng nếu xóa hết câu hỏi
             HttpSession session
     ) {
         User user = (User) session.getAttribute("user");
-
         Subject subject = subjectService.getById(subjectId);
-        if (subject == null) {
-            throw new RuntimeException("Không tìm thấy môn học!");
+
+        Exam exam;
+        if (examId != null) {
+            // --- TRƯỜNG HỢP SỬA ---
+            exam = examService.getExamById(examId); // Lấy đề cũ
+        } else {
+            // --- TRƯỜNG HỢP THÊM MỚI ---
+            exam = new Exam();
+            exam.setCreatedBy(user);
         }
 
-        Exam exam = new Exam();
+        // Cập nhật thông tin chung
         exam.setExamName(title);
         exam.setDescription(description);
         exam.setTotalQuestions(questionCount);
         exam.setDuration(duration);
-        exam.setCreatedBy(user);
-
-        // ✅ DÒNG QUAN TRỌNG NHẤT → SỬA LỖI 500
         exam.setSubject(subject);
 
         examService.save(exam);
 
-        examService.addQuestionsToExam(exam.getExamId(), questionIds);
+        if (questionIds == null) questionIds = new ArrayList<>();
+        examService.updateExamQuestions(exam.getExamId(), questionIds);
 
         return "redirect:/admin/exam_manage";
     }
 
+    @GetMapping("/admin/exams/delete/{id}")
+    @ResponseBody
+    public String deleteExam(@PathVariable Integer id) {
+        try {
+            examService.deleteExam(id);
+            return "success";
+        } catch (Exception e) {
+            return "error";
+        }
+    }
+
+    @GetMapping("/admin/exams/{examId}/question-ids")
+    @ResponseBody
+    public List<Integer> getExamQuestionIds(@PathVariable Integer examId) {
+        return questionService.getQuestionIdsByExamId(examId);
+    }
 }
 

@@ -1,6 +1,7 @@
 package haui.csn.thitot.controller.teacher;
 
 import haui.csn.thitot.entity.*;
+import haui.csn.thitot.repository.QuestionRepository;
 import haui.csn.thitot.repository.ResultRepository;
 import haui.csn.thitot.service.ExamService;
 import haui.csn.thitot.service.QuestionService;
@@ -29,7 +30,7 @@ public class TeacherExamController {
     @Autowired
     private ExamService examService;
     @Autowired
-    private QuestionService questionService;
+    private QuestionRepository questionRepository;
     @Autowired
     private ResultRepository resultRepository;
     // HIỂN THỊ DANH SÁCH ĐỀ THI
@@ -95,7 +96,7 @@ public class TeacherExamController {
         }
 
         // Lấy tất cả câu hỏi thuộc cùng môn học (Question Bank)
-        List<Question> availableQuestions = questionService.getQuestionsBySubject(exam.getSubject().getSubjectId());
+        List<Question> availableQuestions = questionRepository.findAvailableQuestions(exam.getSubject().getSubjectId(), examId);
         // 💡 BỔ SUNG: Lấy ID các câu hỏi đã được gán cho đề thi này
         Set<Integer> selectedQuestionIds = examService.getSelectedQuestionIds(examId);
         if (selectedQuestionIds == null) {
@@ -195,5 +196,22 @@ public class TeacherExamController {
                 .headers(headers)
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
                 .body(new InputStreamResource(in));
+    }
+    @GetMapping("/cancel/{id}")
+    public String cancelExam(@PathVariable Integer id) {
+        try {
+            // Kiểm tra logic: Nếu đề thi chưa có câu hỏi nào (đề thi rác) -> Xóa luôn
+            if (examService.isExamEmpty(id)) {
+                examService.deleteExam(id);
+                return "redirect:/teacher/exam?status=cancelled"; // Thông báo đã hủy
+            }
+
+            // Nếu đề thi đã có câu hỏi (đang sửa) -> Chỉ quay về danh sách, không xóa
+            return "redirect:/teacher/exam";
+
+        } catch (Exception e) {
+            System.err.println("Lỗi khi hủy đề thi: " + e.getMessage());
+            return "redirect:/teacher/exam";
+        }
     }
 }

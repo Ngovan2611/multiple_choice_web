@@ -82,10 +82,16 @@ public class QuestionService {
         return questionRepository.findById(id).orElse(null);
     }
 
-    // Phương thức mới: Tìm kiếm theo Môn học VÀ Từ khóa
+
     public List<Question> searchQuestionsBySubjectAndKeyword(Integer subjectId, String keyword) {
-        // Gọi phương thức Repository mới
         return questionRepository.findBySubject_SubjectIdAndQuestionTextContainingIgnoreCase(subjectId, keyword);
+    }
+    public List<Question> getFreeQuestionsBySubject(Integer subjectId) {
+        return questionRepository.findBySubject_SubjectIdAndExamIsNull(subjectId);
+    }
+
+    public List<Integer> getQuestionIdsByExamId(Integer examId) {
+        return questionRepository.findQuestionIdsByExamId(examId);
     }
 }
 

@@ -220,13 +220,13 @@
         <th>Tên bài kiểm tra</th>
         <th>Thời gian</th>
         <th>Hành động</th>
+
     </tr>
     </thead>
     <tbody>
     <tr th:each="exam : ${exams}">
         <td th:text="${exam.examName}"></td>
         <td th:text="${exam.duration + ' phút'}"></td>
-
         <td class="action-icons">
             <i class='bx bx-edit action-icon'
                th:onclick="|openEditExamModal(${exam.examId})|"
@@ -259,7 +259,8 @@
                 <option value="">-- Chọn Môn Học --</option>
                 <option th:each="s : ${subjects}"
                         th:value="${s.subjectId}"
-                        th:text="${s.subjectName}">
+                        th:text="${s.subjectName}"
+                >
                 </option>
             </select>
             <label for="duration">Thời Gian (Phút):</label>

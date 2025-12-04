@@ -29,32 +29,12 @@
         border: 2px solid #e9d4ff;
     }
 
-    .answer-row {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .add-question-btn {
-        background: #6b46c1;
-        color: white;
-        border: none;
-        padding: 8px 18px;
-        border-radius: 20px;
-        cursor: pointer;
-        margin: 15px 0;
-    }
-
-    .add-question-btn:hover {
-        background: #55349a;
-    }
-
     .sub-title {
         margin-top: 30px;
         text-align: center;
         color: #4c1d95;
     }
-
+    .hidden { display: none !important; }
 </style>
 <header>
     <div class="menu-container">
@@ -142,8 +122,9 @@
                 <tbody id="examTableBody">
                 <tr th:each="exam : ${exams}" th:attr="data-id=${exam.examId}">
                     <td th:text="${exam.examId}">EX001</td>
-                    <td th:text="${exam.description}">Đề thi Toán 10</td>
-                    <td th:text="${exam.subject.subjectName}">Toán</td>
+                    <td th:text="${exam.examName}">Đề thi Toán 10</td>
+                    <td th:text="${exam.subject.subjectName}"
+                        th:data-subject-id="${exam.subject.subjectId}">Toán</td>
                     <td th:text="${exam.totalQuestions}">40</td>
                     <td th:text="${exam.duration + ' phút'}"></td>
                     <td th:text="${exam.createdBy != null ? exam.createdBy.full_name : 'Chưa có'}"></td>
@@ -171,7 +152,10 @@
                     <label>Môn học</label>
                     <select id="examSubject" name="subjectId" required>
                         <option value="">-- Chọn môn học --</option>
-                        <option th:each="exam : ${exams}" th:value="${exam.subject.subjectId}" th:text="${exam.subject.subjectName}"></option>
+                        <option th:each="s : ${subjects}"
+                                th:value="${s.subjectId}"
+                                th:text="${s.subjectName}">
+                        </option>
                     </select>
 
                     <label>Tên đề</label>
@@ -208,15 +192,30 @@
 </main>
 
 <script>
-    // ====== FILTER ======
+    // ==========================================
+    // 0. KHAI BÁO BIẾN TOÀN CỤC (Đưa lên đầu để tránh lỗi)
+    // ==========================================
+    const modal = document.getElementById("examFormModal");
+    const form = document.getElementById("examForm");
+    const formTitle = document.getElementById("formTitle");
+    const saveBtn = document.getElementById("saveBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+
+    const subjectSelect = document.getElementById("examSubject");
+    const questionContainer = document.getElementById("questionContainer");
+
+    // Các input bộ lọc
     const fSubject = document.getElementById('filter-subject');
     const fTitle = document.getElementById('filter-title');
     const fCreated = document.getElementById('filter-createdby');
 
+    // ==========================================
+    // 1. XỬ LÝ BỘ LỌC (FILTER)
+    // ==========================================
     function filterExams() {
-        const s = fSubject.value.toLowerCase();
-        const t = fTitle.value.toLowerCase();
-        const c = fCreated.value.toLowerCase();
+        const s = fSubject ? fSubject.value.toLowerCase() : "";
+        const t = fTitle ? fTitle.value.toLowerCase() : "";
+        const c = fCreated ? fCreated.value.toLowerCase() : "";
 
         document.querySelectorAll("#examTableBody tr").forEach(row => {
             const subject = row.children[2].textContent.toLowerCase();
@@ -231,108 +230,187 @@
         });
     }
 
-    [fSubject, fTitle, fCreated].forEach(el =>
-        el.addEventListener("input", filterExams)
-    );
+    if(fSubject) fSubject.addEventListener("input", filterExams);
+    if(fTitle) fTitle.addEventListener("input", filterExams);
+    if(fCreated) fCreated.addEventListener("input", filterExams);
 
-    // ===== MODAL =====
-    const modal = document.getElementById("examFormModal");
-    const form = document.getElementById("examForm");
-    const title = document.getElementById("formTitle");
-    const saveBtn = document.getElementById("saveBtn");
-
-    document.querySelector(".add-btn").addEventListener("click", () => {
-        form.reset();
-        document.getElementById("examId").value = "";
-        title.textContent = "Thêm đề thi";
-        saveBtn.textContent = "Thêm";
+    // ==========================================
+    // 2. CÁC HÀM HỖ TRỢ MODAL
+    // ==========================================
+    function openModal() {
         modal.classList.remove("hidden");
-    });
+    }
 
-    document.getElementById("cancelBtn").addEventListener("click", () =>
-        modal.classList.add("hidden")
-    );
+    function closeModal() {
+        modal.classList.add("hidden");
+    }
 
-    // Sửa đề thi
+    // Gắn sự kiện đóng modal cho nút Hủy
+    if(cancelBtn) {
+        cancelBtn.addEventListener("click", closeModal);
+    }
+
+    // ==========================================
+    // 3. CHỨC NĂNG: THÊM ĐỀ THI
+    // ==========================================
+    const addBtn = document.querySelector(".add-btn");
+    if (addBtn) {
+        addBtn.addEventListener("click", () => {
+            form.reset();
+            document.getElementById("examId").value = ""; // Xóa ID để biết là thêm mới
+            formTitle.textContent = "Thêm đề thi";
+            saveBtn.textContent = "Thêm";
+
+            // Reset danh sách câu hỏi
+            questionContainer.innerHTML = "<p>Vui lòng chọn môn học để hiển thị câu hỏi.</p>";
+
+            openModal();
+        });
+    }
+
+    // ==========================================
+    // 4. CHỨC NĂNG: SỬA ĐỀ THI
+    // ==========================================
     document.querySelectorAll(".edit-btn").forEach(btn => {
-        btn.addEventListener("click", e => {
+        btn.addEventListener("click", async (e) => {
             e.preventDefault();
-            const row = btn.closest("tr");
+            try {
+                const row = btn.closest("tr");
+                const examId = row.dataset.id;
+                // Lấy subjectId từ thuộc tính data (bạn nhớ thêm th:data-subject-id vào HTML nhé)
+                const subjectId = row.children[2].getAttribute("data-subject-id");
 
-            document.getElementById("examId").value = row.dataset.id;
-            document.getElementById("examTitle").value = row.children[1].textContent;
-            document.getElementById("examSubject").value = row.children[2].getAttribute("data-subject-id");
-            document.getElementById("examQuestionCount").value = row.children[3].textContent;
-            document.getElementById("examDuration").value = parseInt(row.children[4].textContent);
+                // A. Điền thông tin cơ bản
+                document.getElementById("examId").value = examId;
+                document.getElementById("examTitle").value = row.children[1].textContent;
+                document.getElementById("examSubject").value = subjectId;
+                document.getElementById("examQuestionCount").value = row.children[3].textContent;
 
-            title.textContent = "Sửa đề thi";
-            saveBtn.textContent = "Lưu thay đổi";
-            modal.classList.remove("hidden");
+                // Xử lý thời gian (bỏ chữ 'phút' nếu có)
+                let durationText = row.children[4].textContent.replace(' phút', '').trim();
+                document.getElementById("examDuration").value = parseInt(durationText) || 0;
+
+                // Nếu có cột mô tả ẩn, bạn có thể lấy giá trị ở đây. Tạm thời để trống hoặc giữ nguyên.
+                document.getElementById("examDesc").value = "";
+
+                formTitle.textContent = "Sửa đề thi";
+                saveBtn.textContent = "Lưu thay đổi";
+
+                // B. Tải danh sách câu hỏi
+                questionContainer.innerHTML = "<p>Đang tải dữ liệu...</p>";
+
+                // B1. Lấy tất cả câu hỏi của môn học (dùng API tìm câu hỏi tự do + câu của đề này)
+                // Lưu ý: Cần đảm bảo backend hỗ trợ logic này, hoặc dùng API lấy toàn bộ câu hỏi môn học
+                const resQuestions = await fetch(`/admin/questions/by-subject/${subjectId}`);
+                const questions = await resQuestions.json();
+
+                // B2. Lấy danh sách ID câu hỏi đã có trong đề thi này
+                const resSelected = await fetch(`/admin/exams/${examId}/question-ids`);
+                const selectedIds = await resSelected.json();
+
+                // C. Vẽ lại giao diện câu hỏi
+                questionContainer.innerHTML = "";
+                if (!questions || questions.length === 0) {
+                    questionContainer.innerHTML = "<p>Không có câu hỏi nào cho môn này.</p>";
+                } else {
+                    questions.forEach(q => {
+                        // Kiểm tra tích chọn
+                        const isChecked = selectedIds.includes(q.questionId) ? "checked" : "";
+
+                        const block = document.createElement("div");
+                        block.className = "question-block";
+                        block.innerHTML = `
+                            <label>
+                                <input type="checkbox" name="questionIds" value="${q.questionId}" ${isChecked}>
+                                <b>${q.questionText}</b>
+                            </label>
+                            <div style="margin-top:10px; font-size: 0.9em; color: #555;">
+                                <div>A. ${q.answers.A}</div>
+                                <div>B. ${q.answers.B}</div>
+                                <div>C. ${q.answers.C}</div>
+                                <div>D. ${q.answers.D}</div>
+                            </div>
+                        `;
+                        questionContainer.appendChild(block);
+                    });
+                }
+
+                openModal();
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu sửa:", error);
+                alert("Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.");
+            }
         });
     });
 
+    // ==========================================
+    // 5. CHỨC NĂNG: XÓA ĐỀ THI
+    // ==========================================
     document.querySelectorAll(".delete-btn").forEach(button => {
         button.addEventListener("click", () => {
             const id = button.dataset.id;
             if (confirm("Bạn có chắc chắn muốn xóa đề thi này không?")) {
-                fetch(`/admin/exams/delete/${id}`, {method: "DELETE"})
+                fetch(`/admin/exams/delete/${id}`, {method: "GET"}) // Hoặc DELETE tùy Controller
                     .then(r => r.text())
                     .then(res => {
                         if (res === "success") {
                             alert("Đã xóa thành công!");
                             button.closest("tr").remove();
                         } else {
-                            alert("Không thể xóa đề thi.");
+                            alert("Xóa thất bại.");
                         }
                     })
+                    .catch(err => {
+                        console.error(err);
+                        alert("Lỗi kết nối đến máy chủ!");
+                    });
             }
         });
     });
-    const subjectSelect = document.getElementById("examSubject");
-    const questionContainer = document.getElementById("questionContainer");
 
-    subjectSelect.addEventListener("change", () => {
-        const subjectId = subjectSelect.value;
+    // ==========================================
+    // 6. XỬ LÝ KHI CHỌN MÔN HỌC (Ở chế độ Thêm mới)
+    // ==========================================
+    if(subjectSelect) {
+        subjectSelect.addEventListener("change", () => {
+            // Nếu đang ở chế độ Sửa (có examId), có thể bạn không muốn reset danh sách
+            // Nhưng nếu người dùng chủ động đổi môn, ta vẫn tải lại câu hỏi môn mới
+            const subjectId = subjectSelect.value;
 
-        if (!subjectId) {
-            questionContainer.innerHTML = "<p>Chưa chọn môn học.</p>";
-            return;
-        }
+            if (!subjectId) {
+                questionContainer.innerHTML = "<p>Chưa chọn môn học.</p>";
+                return;
+            }
 
-        fetch(`/admin/questions/by-subject/${subjectId}`)
-            .then(res => res.json())
-            .then(data => {
-                questionContainer.innerHTML = "";
-
-                if (data.length === 0) {
-                    questionContainer.innerHTML = "<p>Không có câu hỏi nào cho môn này.</p>";
-                    return;
-                }
-
-                data.forEach(q => {
-                    const block = document.createElement("div");
-                    block.className = "question-block";
-
-                    block.innerHTML = `
-                    <label>
-                        <input type="checkbox" name="questionIds" value="${q.questionId}">
-                        <b>${q.questionText}</b>
-                    </label>
-
-                    <div style="margin-top:10px">
-                        <div>A. ${q.answers.A}</div>
-                        <div>B. ${q.answers.B}</div>
-                        <div>C. ${q.answers.C}</div>
-                        <div>D. ${q.answers.D}</div>
-                        <div style="color:green"><b>Đáp án đúng:</b> ${q.answers.correct}</div>
-                    </div>
-                `;
-
-                    questionContainer.appendChild(block);
-                });
-            });
-    });
-
+            fetch(`/admin/questions/by-subject/${subjectId}`)
+                .then(res => res.json())
+                .then(data => {
+                    questionContainer.innerHTML = "";
+                    if (data.length === 0) {
+                        questionContainer.innerHTML = "<p>Không có câu hỏi nào cho môn này.</p>";
+                        return;
+                    }
+                    data.forEach(q => {
+                        const block = document.createElement("div");
+                        block.className = "question-block";
+                        block.innerHTML = `
+                            <label>
+                                <input type="checkbox" name="questionIds" value="${q.questionId}">
+                                <b>${q.questionText}</b>
+                            </label>
+                            <div style="margin-top:10px; font-size: 0.9em;">
+                                 <div>A. ${q.answers.A}</div>
+                                 <div>B. ${q.answers.B}</div>
+                                 <div>C. ${q.answers.C}</div>
+                                 <div>D. ${q.answers.D}</div>
+                            </div>
+                        `;
+                        questionContainer.appendChild(block);
+                    });
+                })
+                .catch(err => console.error(err));
+        });
+    }
 </script>
 
 </body>

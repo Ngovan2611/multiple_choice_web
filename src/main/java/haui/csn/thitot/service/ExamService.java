@@ -139,6 +139,12 @@ public class ExamService {
         return examRepository.save(exam);
     }
 
+    public boolean isExamEmpty(Integer examId) {
+        // Sử dụng Repository để đếm số câu hỏi đang gán cho đề thi này
+        List<Integer> questionIds = questionRepository.findQuestionIdsByExamId(examId);
+        return questionIds == null || questionIds.isEmpty();
+    }
+
     @Transactional
     public void deleteExam(Integer examId) {
         Exam exam = examRepository.findById(examId)

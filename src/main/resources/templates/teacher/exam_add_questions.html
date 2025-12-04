@@ -175,7 +175,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="q : ${questions}">
+            <tr th:each="q : ${questions}" th:if="${not #lists.isEmpty(questions)}">
                 <td>
                     <input type="checkbox"
                            class="question-checkbox"
@@ -186,32 +186,43 @@
                 <td th:text="${q.questionId}"></td>
 
                 <td>
-                    <th:block th:with="maxLength=(${#strings.length(q.questionText) > 100} ? 100 : ${#strings.length(q.questionText)})">
-
-        <span th:text="${#strings.substring(q.questionText, 0, maxLength)
-                         + (#strings.length(q.questionText) > 100 ? '...' : '')}">
-            Nội dung câu hỏi được cắt ngắn.
-        </span>
-                    </th:block>
+                    <span th:text="${#strings.abbreviate(q.questionText, 100)}">Nội dung...</span>
                 </td>
 
                 <td class="action-icons">
                     <i class='bx bx-search-alt-2 action-icon'
                        th:onclick="|openDetailModal(${q.questionId})|"
-                       title="Xem chi tiết nội dung và đáp án">
+                       title="Xem chi tiết">
                     </i>
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(questions)}">
+                <td colspan="4" style="text-align: center; padding: 30px; color: #666;">
+                    <i class='bx bx-info-circle' style="font-size: 24px; vertical-align: middle;"></i><br>
+                    Hiện không có câu hỏi tự do nào thuộc môn học này.<br>
+                    Vui lòng thêm câu hỏi mới vào Ngân hàng câu hỏi.
                 </td>
             </tr>
             </tbody>
         </table>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
 
-        <div style="text-align: right; margin-top: 30px;">
-            <button type="submit" class="btn-submit">
-                <i class='bx bx-save'></i> Lưu Các Câu Hỏi Đã Chọn
-            </button>
-            <a th:href="@{/teacher/exam}" class="btn-finish">
-                <i class='bx bx-check-circle'></i> Hoàn Tất & Quay Lại
+            <a th:href="@{/teacher/exam/cancel/{id}(id=${exam.examId})}"
+               class="btn btn-cancel"
+               style="border-radius: 8px; padding: 12px 25px; background: #dc3545; color: white; text-decoration: none; font-weight: bold;"
+               onclick="return confirm('Bạn có chắc muốn hủy? Nếu đề thi chưa có câu hỏi, nó sẽ bị xóa.')">
+                <i class='bx bx-x-circle'></i> Hủy Bỏ
             </a>
+
+            <div style="display: flex; gap: 15px;">
+                <button type="submit" class="btn-submit">
+                    <i class='bx bx-save'></i> Lưu Các Câu Hỏi Đã Chọn
+                </button>
+                <a th:href="@{/teacher/exam}" class="btn-finish">
+                    <i class='bx bx-check-circle'></i> Hoàn Tất & Quay Lại
+                </a>
+            </div>
         </div>
     </form>
 </div>
