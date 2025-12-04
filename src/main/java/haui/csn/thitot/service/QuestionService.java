@@ -18,14 +18,13 @@ public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
 
-    public List<Question> getAllQuestionsByExam_Id(int exam_id) {
-        return questionRepository.findByExam_ExamId(exam_id);
+
     @Autowired
     private SubjectRepository subjectRepository;
     @Autowired
     private ExamRepository examRepository;
 
-  public List<Question> getAllQuestionsByExam_Id(int exam_id) {
+    public List<Question> getAllQuestionsByExam_Id(int exam_id) {
      return questionRepository.findByExam_ExamId(exam_id);
     }
 
@@ -56,7 +55,6 @@ public class QuestionService {
         return questionRepository.findById(id).orElse(null);
     }
 
-    // Tạo câu hỏi mới
     public Question createQuestion(Integer subjectId, String text, String imageUrl) {
 
         Subject subject = subjectRepository.findById(subjectId)

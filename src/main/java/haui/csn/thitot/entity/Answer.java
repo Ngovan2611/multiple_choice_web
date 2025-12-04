@@ -26,7 +26,6 @@ public class Answer {
     @Column(name = "answer_id")
     private Integer answerId;
 
-
     @OneToOne
     @JoinColumn(name = "question_id", nullable = false)
     @JsonIgnore

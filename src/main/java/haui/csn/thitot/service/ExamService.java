@@ -1,14 +1,26 @@
 package haui.csn.thitot.service;
+import haui.csn.thitot.entity.Question;
 
 
 import haui.csn.thitot.entity.Exam;
+import haui.csn.thitot.entity.Result;
 import haui.csn.thitot.entity.Subject;
 import haui.csn.thitot.entity.User;
 import haui.csn.thitot.repository.ExamRepository;
+import haui.csn.thitot.repository.QuestionRepository;
+import haui.csn.thitot.repository.ResultRepository;
+import haui.csn.thitot.repository.SubjectRepository;
+import haui.csn.thitot.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
