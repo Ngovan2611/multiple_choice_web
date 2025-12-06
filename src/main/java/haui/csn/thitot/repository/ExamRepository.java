@@ -35,7 +35,6 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
     @Modifying
     @Query(value = "INSERT INTO exam_question (exam_id, question_id) VALUES (:examId, :questionId)", nativeQuery = true)
     void insert(@Param("examId") Integer examId, @Param("questionId") Integer questionId);
-    Exam findFirstBySubject_SubjectId(Integer subjectId);
     List<Exam> findByCreatedBy_Id(Integer userId);
     List<Exam> findByCreatedBy_IdAndSubject_SubjectId(Integer teacherId, Integer subjectId);
     List<Exam> findByCreatedBy_IdAndExamNameContainingIgnoreCase(Integer teacherId, String keyword);
@@ -44,6 +43,4 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
     @Transactional
     @Query("UPDATE Exam e SET e.totalQuestions = ?2 WHERE e.examId = ?1")
     void updateTotalQuestions(Integer examId, Integer totalCount);
-
-
 }

@@ -65,12 +65,7 @@ public class ExamService {
         examRepository.save(exam);
     }
 
-    public Exam getExamBySubject(Integer subjectId) {
-        return examRepository.findFirstBySubject_SubjectId(subjectId);
-    }
-    // Phương thức mới: Lấy đề thi theo ID giáo viên
     public List<Exam> getExamsByTeacher(Integer teacherId) {
-        // Phương thức này cần được định nghĩa trong ExamRepository
         return examRepository.findByCreatedBy_Id(teacherId);
     }
     public List<Exam> searchBySubjectAndKeyword(Integer teacherId, Integer subjectId,String keyword) {
