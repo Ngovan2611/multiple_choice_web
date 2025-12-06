@@ -60,7 +60,6 @@ public class ProfileController {
         session.setAttribute("user", user);
 
         User teacher = userService.getTeacherByClassName(user.getClassName(), "teacher");
-
         model.addAttribute("user", user);
         model.addAttribute("teacher", teacher);
         model.addAttribute("success", "Cập nhật thông tin thành công!");
