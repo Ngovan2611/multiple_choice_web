@@ -5,6 +5,7 @@ import haui.csn.thitot.service.AnswerService;
 import haui.csn.thitot.service.ExamService;
 import haui.csn.thitot.service.QuestionService;
 import haui.csn.thitot.service.SubjectService;
+import haui.csn.thitot.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,9 @@ import java.util.Optional;
 public class ExamController {
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     private ExamService examService;
 
     @Autowired
@@ -28,10 +32,6 @@ public class ExamController {
     @Autowired
     private AnswerService answerService;
 
-    @Autowired
-    private SubjectService subjectService;
-
-
     @GetMapping("/exam")
     public String exam(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
@@ -39,11 +39,13 @@ public class ExamController {
             session.invalidate();
             return "redirect:/login";
         }
+        User teacher = userService.getTeacherByClassName(user.getClassName(), "teacher");
+        User admin = userService.getUsersByRole("admin").get(0);
+        List<Exam> examsCreatByAdmin = examService.getExamsByTeacher(admin.getId());
         model.addAttribute("user", user);
-
-        List<Exam> exams = examService.getAll();
+        List<Exam> exams = examService.getExamsByTeacher(teacher.getId());
+        exams.addAll(examsCreatByAdmin);
         model.addAttribute("exams", exams);
-
         return "/user/exam";
     }
 
