@@ -12,7 +12,24 @@ public class SubjectService {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
     public List<Subject> getAll() {
         return subjectRepository.findAll();
+    }
+
+    public Subject save(Subject subject) {
+        return subjectRepository.save(subject);
+    }
+
+    public Subject getById(int id) {
+        return subjectRepository.findById(id)
+                .orElse(null); // Trả về null nếu không tìm thấy
+    }
+
+    public void deleteById(int id) {
+        subjectRepository.deleteById(id);
+    }
+    public Subject findById(Integer id) {
+        return subjectRepository.findById(id).orElse(null);
     }
 }

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh Sách Đề Thi</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+        html {
+            overflow-y: scroll;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+        body {
+            background: #fff;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .teacher-header {
+            background-color: #7a5cf4;
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(122, 92, 244, 0.3);
+            margin-bottom:20px;
+        }
+        .teacher-header h1 { margin: 0; font-size: 24px; color:white;}
+        .teacher-header h1 span { color: #ffe36d; }
+        .menu a {
+            color: white;
+            margin-left: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+        .menu a:hover { opacity: 1; }
+
+        /* Banner Đề thi */
+        .exam-banner {
+            background: #39c8eb; /* Màu xanh ngọc */
+            padding: 40px 0;
+            text-align: center;
+            color: white;
+        }
+        .exam-banner h2 { margin: 0; font-size: 30px; }
+        .btn-add {
+            background: #7a5cf4; /* Màu tím */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+            text-decoration: none; /* Dùng cho thẻ <a> */
+            display: inline-block;
+        }
+
+        /* Search & Filter Bar */
+        .filter-bar {
+            background: #66f88f; /* Màu xanh lá cây nhạt */
+            padding: 15px 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .filter-bar select, .filter-bar input {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        .search-container {
+            flex-grow: 1; /* Cho phép ô tìm kiếm mở rộng */
+            display: flex;
+            position: relative;
+        }
+        .search-container input {
+            width: 100%;
+            padding-right: 35px; /* Chỗ cho icon */
+        }
+        .search-container i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7a5cf4;
+        }
+
+        /* Table */
+        table {
+            width: 95%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #e1e1e1;
+            text-align: center;
+        }
+        td:nth-child(2), td:nth-child(3), td:last-child {
+            text-align: center;
+        }
+        /* Icons */
+        .action-icons i {
+            font-size: 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            color: #7a5cf4;
+        }
+        .action-icons a {
+            text-decoration: none;
+        }
+        .action-icons i.bx-x-circle { color: red; }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+        .modal {
+            background: white;
+            width: 550px; /* Giữ kích thước */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Định dạng chung cho tất cả input và select trong modal */
+        .modal input:not([type="button"]),
+        .modal select,
+        .modal textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box; /* Rất quan trọng để padding không làm tăng chiều rộng */
+        }
+
+        /* Điều chỉnh khoảng cách và font cho label */
+        .modal label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .btn-save {
+            background: #38b466; /* Xanh lá cây */
+            color: white;
+            border-radius: 6px;
+            padding: 10px 20px;
+        }
+        .btn-cancel {
+            background: #ccc;
+            color: black;
+            border-radius: 6px;
+            padding: 10px 20px;
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+<header class="teacher-header">
+    <a href="/teacher/home">
+        <h1>Thi<span>Tot</span></h1>
+    </a>
+    <nav class="menu">
+        <a href="/teacher/question_bank">Ngân hàng câu hỏi</a>
+        <a href="/teacher/exam" style="opacity: 1; border-bottom: 2px solid white; padding-bottom: 5px;">Đề thi</a>
+        <a href="/teacher/class">Lớp học</a>
+        <a href="/teacher/profile">Thông tin cá nhân</a>
+        <a href="/logout">Đăng xuất</a>
+    </nav>
+</header>
+<div class="exam-banner">
+    <h2>Đề thi kiểm tra</h2>
+    <button onclick="openCreateExamModal()" class="btn-add">+ Thêm bài kiểm tra</button>
+</div>
+
+<h3 style="text-align: center; margin-top: 30px;">Danh sách bài kiểm tra</h3>
+<div class="filter-bar">
+
+    <form method="get" th:action="@{/teacher/exam}" style="display: flex; gap: 15px; align-items: center; width: 100%;">
+
+        <select id="sId" name="subjectId" onchange="this.form.submit()"> <option value="">-- Chọn Môn Học --</option>
+            <option th:each="s : ${subjects}"
+                    th:value="${s.subjectId}"
+                    th:text="${s.subjectName}"
+                    th:selected="${s.subjectId == selectedSubjectId}">
+            </option>
+        </select>
+
+        <div class="search-container">
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm kiếm theo tên bài kiểm tra" style="width: 100%;">
+            <i class='bx bx-search'></i>
+            <button type="submit" style="position: absolute; right: 0; opacity: 0; width: 35px; height: 100%; cursor: pointer;"></button>
+        </div>
+    </form>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Tên bài kiểm tra</th>
+        <th>Thời gian</th>
+        <th>Hành động</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="exam : ${exams}">
+        <td th:text="${exam.examName}"></td>
+        <td th:text="${exam.duration + ' phút'}"></td>
+        <td class="action-icons">
+            <i class='bx bx-edit action-icon'
+               th:onclick="|openEditExamModal(${exam.examId})|"
+               title="Chỉnh sửa chi tiết đề thi">
+            </i>
+
+            <a th:href="@{/teacher/exam/delete/{id}(id=${exam.examId})}"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa đề thi này không?')">
+                <i class='bx bx-x-circle icon' title="Xóa"></i>
+            </a>
+
+            <a th:href="@{/teacher/exam/report/{id}(id=${exam.examId})}">
+                <i class='bx bx-line-chart icon' style="color: #007bff;" title="Xem thống kê"></i>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div class="modal-overlay" id="createExamModal">
+    <div class="modal" style="width: 550px;">
+        <h3>Tạo Đề Thi Mới</h3>
+
+        <form method="post" th:action="@{/teacher/exam/save}">
+
+            <label for="examName">Tên Đề Thi:</label>
+            <input type="text" id="examName" name="examName" required placeholder="Ví dụ: Kiểm tra giữa kỳ Vật lý 101">
+
+            <label for="subjectId">Môn Học:</label>
+            <select id="subjectId" name="subjectId" required>
+                <option value="">-- Chọn Môn Học --</option>
+                <option th:each="s : ${subjects}"
+                        th:value="${s.subjectId}"
+                        th:text="${s.subjectName}"
+                >
+                </option>
+            </select>
+            <label for="duration">Thời Gian (Phút):</label>
+            <input type="number" id="duration" name="duration" required min="5" placeholder="Ví dụ: 60">
+            <label for="totalQuestions">Tổng Số Câu Hỏi:</label>
+            <input type="number" id="totalQuestions" name="totalQuestions" required min="1" placeholder="Ví dụ: 20">
+            <label for="description">Mô Tả (Tùy chọn):</label>
+            <textarea id="description" name="description" rows="3" placeholder="Mô tả về cấu trúc đề thi..."
+                      style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box;"></textarea>
+
+            <div class="modal-buttons" style="text-align: right; margin-top: 15px;">
+                <button type="button" class="btn btn-cancel" onclick="closeCreateExamModal()">Hủy</button>
+                <button type="submit" class="btn btn-save" style="background: #38b466;">Lưu và Chọn Câu hỏi</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-overlay" id="editExamModal" onclick="closeEditExamModal()">
+    <div class="modal" style="width: 550px;" onclick="event.stopPropagation()">
+
+        <h3 style="margin-bottom: 20px;">Chỉnh Sửa Đề Thi #<span id="edit-id-display"></span></h3>
+
+        <form id="editExamForm" method="post" action="">
+            <input type="hidden" id="edit-exam-id" name="examId">
+
+            <label for="edit-exam-name">Tên Đề Thi:</label>
+            <input type="text" id="edit-exam-name" name="examName" required>
+
+            <label for="edit-duration">Thời Gian (Phút):</label>
+            <input type="number" id="edit-duration" name="duration" required min="5">
+
+            <label for="edit-totalQuestions">Tổng Số Câu Hỏi:</label>
+            <input type="number" id="edit-totalQuestions" name="totalQuestions" required min="1">
+
+            <label for="edit-description">Mô Tả (Tùy chọn):</label>
+            <textarea id="edit-description" name="description" rows="3" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box;"></textarea>
+
+            <div class="modal-buttons" style="text-align: right; margin-top: 15px;">
+                <button type="button" class="btn btn-cancel" onclick="closeEditExamModal()">Hủy</button>
+                <button type="submit" class="btn btn-save" style="background: #007bff;">Cập nhật</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    /* ======== CREATE EXAM MODAL ======== */
+    // Hàm này được gọi khi nhấn nút "+ Thêm bài kiểm tra"
+    function openCreateExamModal() {
+        document.getElementById("createExamModal").style.display = "flex";
+    }
+
+    // Hàm này được gọi khi nhấn nút "Hủy"
+    function closeCreateExamModal() {
+        document.getElementById("createExamModal").style.display = "none";
+    }
+
+    /* ======== DELETE EXAM (Xác nhận) ======== */
+    function confirmDelete(id) {
+        if (confirm("Bạn có chắc chắn muốn xóa đề thi ID: " + id + " không? Hành động này không thể hoàn tác.")) {
+            // Chuyển hướng tới endpoint delete đã tạo trong Controller
+            window.location.href = "/teacher/exam/delete/" + id;
+        }
+    }
+    /* ======== EDIT EXAM MODAL (Lấy dữ liệu & Mở) ======== */
+    function openEditExamModal(id) {
+        // Gọi API để lấy dữ liệu chi tiết
+        fetch("/teacher/exam/api/exam/" + id)
+            .then(response => response.json())
+            .then(exam => {
+                // Điền dữ liệu vào form
+                document.getElementById("edit-id-display").innerText = exam.examId;
+                document.getElementById("edit-exam-id").value = exam.examId;
+                document.getElementById("edit-exam-name").value = exam.examName;
+                document.getElementById("edit-duration").value = exam.duration;
+                document.getElementById("edit-totalQuestions").value = exam.totalQuestions;
+                // Kiểm tra null cho trường description
+                document.getElementById("edit-description").value = exam.description || "";
+
+                // Đặt action cho form POST
+                document.getElementById("editExamForm").action = "/teacher/exam/update/" + exam.examId;
+
+                document.getElementById("editExamModal").style.display = "flex";
+            })
+            .catch(error => console.error('Lỗi khi tải chi tiết đề thi:', error));
+    }
+    function closeEditExamModal() {
+        document.getElementById("editExamModal").style.display = "none";
+    }
+</script>
+</html>

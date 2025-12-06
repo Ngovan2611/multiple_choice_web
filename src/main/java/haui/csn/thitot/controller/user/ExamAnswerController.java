@@ -1,26 +1,19 @@
-package haui.csn.thitot.controller;
+package haui.csn.thitot.controller.user;
 
 import haui.csn.thitot.entity.Exam;
 import haui.csn.thitot.entity.ExamAnswer;
-import haui.csn.thitot.entity.Question;
-import haui.csn.thitot.entity.Result;
 import haui.csn.thitot.entity.User;
+import haui.csn.thitot.service.ExamAnswerService;
 import haui.csn.thitot.service.ExamService;
 import haui.csn.thitot.service.QuestionService;
 import haui.csn.thitot.service.ResultService;
-import haui.csn.thitot.service.ExamAnswerService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,13 +29,19 @@ public class ExamAnswerController {
 
     @Autowired
     private QuestionService questionService;
+
     @Autowired
     private ExamService examService;
 
     @GetMapping("/result/detail/{resultId}")
-    public String viewResultDetail(@PathVariable Integer resultId, Model model, HttpSession session) {
+    public String viewResultDetail(@PathVariable Integer resultId,
+                                   Model model,
+                                   HttpSession session) {
+
         User user = (User) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         var result = resultService.getResultById(resultId);
         List<ExamAnswer> examAnswers = examAnswerService.getExamAnswerDetails(resultId);
@@ -51,21 +50,18 @@ public class ExamAnswerController {
         Map<Integer, String> selectedAnswers = examAnswers.stream()
                 .collect(Collectors.toMap(
                         ea -> ea.getQuestion().getQuestionId(),
-                        ea -> ea.getSelectedAnswerId() != null ? String.valueOf(ea.getSelectedAnswerId()) : "",
+                        ea -> ea.getSelectedAnswerId() != null
+                                ? String.valueOf(ea.getSelectedAnswerId())
+                                : "",
                         (a, b) -> a
                 ));
-        model.addAttribute("selectedAnswers", selectedAnswers);
-
 
         model.addAttribute("exam", exam);
         model.addAttribute("user", user);
         model.addAttribute("result", result);
         model.addAttribute("selectedAnswers", selectedAnswers);
         model.addAttribute("questions", exam.getQuestions());
-        return "history_detail";
+
+        return "/user/history_detail";
     }
-
-
-
-
 }

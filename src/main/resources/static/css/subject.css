@@ -1,59 +1,75 @@
- main {
-      padding: 50px 80px;
-    }
+main {
+  padding: 50px 80px;
+}
 
-    .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
 
-    .header-row h2 {
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0;
-    }
+.header-row h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
 
-    .search-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-    .search-bar input {
-      width: 360px;
-      height: 56px;
-      border-radius: 28px;
-      border: 1px solid #ccc;
-      padding: 0 20px;
-      font-size: 16px;
-      outline: none;
-    }
+.search-bar input {
+  width: 360px;
+  height: 56px;
+  border-radius: 28px;
+  border: 1px solid #ccc;
+  padding: 0 20px;
+  font-size: 16px;
+  outline: none;
+}
 
-    .search-bar button {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      border: none;
-      background-color: #6f42c1;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-    }
+.search-bar button {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background-color: #6f42c1;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
 
  .subject-container {
-     background-color: #d9d9d9;
-     border-radius: 0;
-     padding: 60px 40px;
-     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-     display: flex;
-     flex-wrap: wrap;
-     gap: 1rem;
+    background-color: #d9d9d9;
+    border-radius: 0;
+    padding: 60px 40px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
  }
 
 
+.search-bar {
+    display: flex;
+    gap: 5px;
+}
 
+#searchBtn {
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    color: black;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#searchBtn i {
+    font-size: 16px;
+}
 
  .subject-card {
      background-color: #f9f9f9;
@@ -90,7 +106,6 @@
      margin-bottom: 20px;
  }
 
- /* Giữ nguyên màu nút như bạn gửi */
  .button-group {
      display: flex;
      justify-content: flex-end;
@@ -128,98 +143,98 @@
 
 
     /* Popup */
-    .overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-    }
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
 
-    .overlay.active { display: flex; }
+.overlay.active { display: flex; }
 
-    .popup {
-      background-color: #f8f3ff;
-      padding: 40px 50px;
-      border-radius: 20px;
-      width: 600px;
-      max-width: 90%;
-      position: relative;
-      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
-      animation: fadeIn 0.3s ease;
-    }
+.popup {
+  background-color: #f8f3ff;
+  padding: 40px 50px;
+  border-radius: 20px;
+  width: 600px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.3s ease;
+}
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.95);}
-      to {opacity: 1; transform: scale(1);}
-    }
+@keyframes fadeIn {
+  from {opacity: 0; transform: scale(0.95);}
+  to {opacity: 1; transform: scale(1);}
+}
 
-    .close-btn {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      background: none;
-      border: none;
-      font-size: 22px;
-      cursor: pointer;
-    }
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
 
-    .popup h3 {
-      text-align: center;
-      margin-bottom: 25px;
-      font-size: 26px;
-      font-weight: 700;
-    }
+.popup h3 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: 700;
+}
 
-    .popup input, .popup select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-      background: #fff;
-      margin-bottom: 15px;
-    }
+.popup input, .popup select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  background: #fff;
+  margin-bottom: 15px;
+}
 
-    .popup button.submit {
-      display: block;
-      margin: 20px auto 0;
-      background-color: #6f42c1;
-      color: #fff;
-      border: none;
-      padding: 10px 40px;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 16px;
-    }
+.popup button.submit {
+  display: block;
+  margin: 20px auto 0;
+  background-color: #6f42c1;
+  color: #fff;
+  border: none;
+  padding: 10px 40px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+}
 
-    .popup-details p {
-      font-size: 15px;
-      margin-bottom: 10px;
-    }
- .difficulty-table {
-     width: 100%;
-     border-collapse: collapse;
-     margin-top: 10px;
-     font-size: 15px;
- }
+.popup-details p {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+.difficulty-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin-top: 10px;
+ font-size: 15px;
+}
 
- .difficulty-table th,
- .difficulty-table td {
-     border: 1px solid #ccc;
-     padding: 8px 10px;
-     text-align: center;
- }
+.difficulty-table th,
+.difficulty-table td {
+ border: 1px solid #ccc;
+ padding: 8px 10px;
+ text-align: center;
+}
 
- .difficulty-table th {
-     background-color: #f3ebff;
-     color: #5a32a3;
-     font-weight: 600;
- }
+.difficulty-table th {
+ background-color: #f3ebff;
+ color: #5a32a3;
+ font-weight: 600;
+}
 
- .difficulty-table tr:nth-child(even) {
-     background-color: #faf7ff;
- }
+.difficulty-table tr:nth-child(even) {
+ background-color: #faf7ff;
+}

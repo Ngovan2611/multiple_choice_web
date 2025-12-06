@@ -1,6 +1,7 @@
 package haui.csn.thitot.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,11 +26,10 @@ public class Answer {
     @Column(name = "answer_id")
     private Integer answerId;
 
-
     @OneToOne
     @JoinColumn(name = "question_id", nullable = false)
+    @JsonIgnore
     private Question question;
-    ;
 
     @Column(name = "is_correct", length = 10)
     private String isCorrect;

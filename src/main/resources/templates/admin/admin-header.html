@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="adminHeader">
+    <header>
+        <div class="menu-container">
+            <div class="menu-trigger">☰</div>
+
+            <div class="sidebar">
+                <div class="menu-item">
+                    Quản lý người dùng
+                    <div class="submenu">
+                        <a th:href="@{/admin/student_manage}">Quản lý học sinh</a>
+                        <a th:href="@{/admin/teacher_manage}">Quản lý giáo viên</a>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <a th:href="@{/admin/subject_manage}" style="text-decoration:none; color:inherit;">
+                        Quản lý môn học
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a th:href="@{/admin/exam_manage}" style="text-decoration:none; color:inherit;">
+                        Quản lý đề thi
+                    </a>
+                </div>
+
+                <div class="menu-item">
+                    <a th:href="@{/admin/question_manage}" style="text-decoration:none; color:inherit;">
+                        Quản lý câu hỏi
+                    </a>
+                </div>
+
+                <div class="logout-item">
+                    <a th:href="@{/logout}">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+
+        <h1>Quản trị viên</h1>
+        <div class="logo">
+            <img src="/image/Logo.png" alt="Logo">
+        </div>
+    </header>
+</div>
+</body>
+</html>

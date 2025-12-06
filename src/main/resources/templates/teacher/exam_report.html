@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê Đề thi</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+        html {
+            overflow-y: scroll;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+        /* CSS cơ bản cho giao diện báo cáo */
+        body { margin: 0; font-family: Arial, sans-serif; background: #f4f4f4; }
+        .teacher-header {
+            background: #7a5cf4; color: white; padding: 15px 50px;
+            display: flex; justify-content: space-between; margin-bottom: 20px;
+        }
+        .teacher-header h1 span { color: #ffe36d; }
+        .menu a { color: white; margin-left: 25px; text-decoration: none; font-weight: 500; }
+        .main-container {
+            width: 90%; max-width: 1200px; margin: 0 auto; padding: 20px;
+            background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .exam-info h2 {
+            margin-top: 0; color: #333; font-size: 28px;
+            border-bottom: 3px solid #7a5cf4; padding-bottom: 10px; margin-bottom: 20px;
+        }
+        .statistic-box {
+            display: flex; justify-content: space-between; gap: 20px; margin-bottom: 30px;
+        }
+        .stat-card {
+            flex-basis: 30%; padding: 20px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;
+        }
+        /* Style cho các thẻ thống kê */
+        .stat-card.green { background: #d4edda; color: #155724; }
+        .stat-card.blue { background: #d0e7f7; color: #0c5460; }
+        .stat-card.orange { background: #fff3cd; color: #856404; }
+        .stat-card h4 { margin: 0 0 5px 0; font-size: 16px; }
+        .stat-card p { margin: 0; font-size: 36px; font-weight: bold; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: #7a5cf4; color: white; }
+        .back-link {
+            display: inline-block; margin-bottom: 20px; padding: 10px 15px;
+            background: #6c757d; color: white; text-decoration: none; border-radius: 5px;
+        }
+        .btn-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 20px;
+            background-color: #28a745; /* Màu xanh Excel */
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-export:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+<header class="teacher-header">
+    <h1>Thi<span>Tot</span></h1>
+    <nav class="menu">
+        <a href="/teacher/home">Trang chủ</a>
+        <a href="/teacher/question_bank">Ngân hàng câu hỏi</a>
+        <a th:href="@{/teacher/exam}">Đề thi</a>
+        <a href="/teacher/class">Lớp học</a>
+        <a href="/teacher/profile">Thông tin cá nhân</a>
+        <a href="/logout">Đăng xuất</a>
+    </nav>
+</header>
+
+<div class="main-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <a th:href="@{/teacher/exam}" class="back-link">
+            <i class='bx bx-arrow-back'></i> Quay lại
+        </a>
+
+        <a th:href="@{/teacher/exam/report/{id}/export(id=${exam.examId})}" class="btn-export">
+            <i class='bx bx-download'></i> Xuất Excel
+        </a>
+    </div>
+
+    <div class="exam-info">
+        <h2>Báo Cáo Thống Kê Đề Thi: <span th:text="${exam.examName}"></span></h2>
+        <p><strong>Môn học:</strong> <span th:text="${exam.subject.subjectName}"></span>
+            <strong>Tổng số câu:</strong> <span th:text="${exam.totalQuestions}"></span>
+            <strong>Thời lượng:</strong> <span th:text="${exam.duration + ' phút'}"></span>
+        </p>
+    </div>
+
+    <div class="statistic-box">
+        <div class="stat-card green">
+            <h4>Số Lần Thi</h4>
+            <p th:text="${totalAttempts ?: 0}">0</p>
+        </div>
+        <div class="stat-card blue">
+            <h4>Điểm Trung Bình</h4>
+            <p th:text="${avgScore != null ? #numbers.formatDecimal(avgScore, 0, 'COMMA', 2, 'POINT') : 'N/A'}">N/A</p>
+        </div>
+        <div class="stat-card orange">
+            <h4>Điểm Cao Nhất</h4>
+            <p th:text="${maxScore != null ? #numbers.formatDecimal(maxScore, 0, 'POINT', 2, 'COMMA') : 'N/A'}">N/A</p>
+        </div>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Sinh viên</th>
+            <th>Lớp học</th>
+            <th>Điểm số</th>
+            <th>Thời gian bắt đầu</th>
+            <th>Thời gian nộp</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="result : ${detailedResults}">
+            <td th:text="${result.user != null ? result.user.full_name : 'Người dùng đã xóa'}"></td>
+            <td th:text="${result.user != null ? result.user.className : 'Chưa xếp lớp'}"></td>
+            <td th:text="${result.score != null ? #numbers.formatDecimal(result.score, 0, 'POINT', 2, 'COMMA') : 0}"></td>
+            <td th:text="${result.startTime != null ? #temporals.format(result.startTime, 'dd-MM-yyyy HH:mm') : 'Đang thi'}"></td>
+            <td th:text="${result.endTime != null ? #temporals.format(result.endTime, 'dd-MM-yyyy HH:mm') : 'Đang thi'}"></td>
+        </tr>
+
+        <tr th:if="${detailedResults == null or detailedResults.empty}">
+            <td colspan="5" style="text-align: center; color: #888;">
+                Chưa có kết quả thi nào.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

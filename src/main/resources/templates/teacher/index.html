@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ Giáo viên - ThiTot</title>
+    <style>
+        html, body {
+            height: 100%;
+        }
+        html {
+            overflow-y: scroll;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #222;
+        }
+
+        /* Header */
+        .teacher-header {
+            background-color: #7a5cf4;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 60px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .teacher-header .logo h1 {
+            font-size: 24px;
+            color: white;
+            margin: 0;
+        }
+
+        .teacher-header .logo span {
+            color: #ffe36d;
+        }
+
+        .teacher-header .menu ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .teacher-header .menu a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #444;
+            margin-bottom: 30px;
+        }
+
+        .hero img {
+            width: 80%;
+            max-width: 900px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Features */
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            padding: 60px 20px;
+            background: #fafafa;
+        }
+
+        .feature {
+            text-align: center;
+            width: 250px;
+        }
+
+        .feature img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .feature p {
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            background-color: #222;
+            color: white;
+            padding: 15px;
+            font-size: 14px;
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<header class="teacher-header">
+    <a href="/teacher/home" class="logo">
+        <h1>Thi<span>Tot</span></h1>
+    </a>
+    <nav class="menu">
+        <ul>
+            <li><a href="/teacher/question_bank">Ngân hàng câu hỏi</a></li>
+            <li><a href="/teacher/exam">Đề thi</a></li>
+            <li><a href="/teacher/class">Lớp học</a></li>
+            <li><a href="/teacher/profile">Thông tin cá nhân</a></li>
+            <li><a href="/logout">Đăng xuất</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Xin chào, <span th:text="${teacher != null ? teacher.full_name : 'Giáo viên'}">Giáo viên</span>!</h1>
+    <p>Quản lý đề thi, câu hỏi và theo dõi kết quả học sinh dễ dàng.<br>
+        Nâng cao chất lượng giáo dục.</p>
+    <img src="/image/anhnen1.jpg" alt="Giáo viên và học sinh trong lớp học">
+</section>
+
+<section class="features">
+    <div class="feature">
+        <img src="/image/anhnen2.jpg" alt="Công cụ học tập hiện đại">
+        <p>Công cụ học tập hiện đại</p>
+    </div>
+
+    <div class="feature">
+        <img src="/image/anhnen3.jpg" alt="Giao diện thân thiện">
+        <p>Giao diện thân thiện</p>
+    </div>
+
+    <div class="feature">
+        <img src="/image/anhnen4.jpg" alt="Đa dạng nội dung">
+        <p>Đa dạng nội dung</p>
+    </div>
+</section>
+
+<footer>
+    © 2025 ThiTot - Nền tảng hỗ trợ giáo viên quản lý thi hiệu quả
+</footer>
+
+</body>
+</html>

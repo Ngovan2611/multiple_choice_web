@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản trị viên - Danh sách môn học</title>
+    <link rel="stylesheet" href="/css/admin/teacherManage.css">
+    <link rel="stylesheet" href="/css/admin/index.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div th:replace="~{admin/admin-header :: adminHeader}"></div>
+
+<main class="container">
+    <section class="teacher-list-section">
+        <div class="section-header">
+            <h2>Danh sách môn học</h2>
+        </div>
+
+        <div class="add-btn-container">
+            <button class="add-btn">+ Thêm môn học</button>
+        </div>
+
+        <div id="subjectTableContainer">
+            <table class="teacher-table">
+                <thead>
+                <tr>
+                    <th>Mã môn</th>
+                    <th>Tên môn</th>
+                    <th>Mô tả</th>
+                    <th>Ngày tạo</th>
+                    <th>Ảnh</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody id="subjectTableBody">
+                <tr th:each="subject : ${subjects}" th:attr="data-id=${subject.subjectId}">
+                    <td th:text="${subject.subjectId}"></td>
+                    <td th:text="${subject.subjectName}"></td>
+                    <td th:text="${subject.description}"></td>
+                    <td th:text="${#dates.format(subject.createdAt, 'yyyy-MM-dd')}"></td>
+                    <td>
+                        <img th:if="${subject.imageUrl != null}" th:src="@{${subject.imageUrl}}" alt="Ảnh" width="50">
+                    </td>
+                    <td class="actions">
+                        <a href="#" class="edit-btn" title="Sửa">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
+                        <button type="button" class="delete-btn" th:data-id="${subject.subjectId}" title="Xóa">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Modal Thêm/Sửa -->
+    <div id="subjectFormModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="formTitle">Thêm môn học</h2>
+            <form id="subjectForm" th:action="@{/admin/subject/save}" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="subjectId" name="id">
+                <input type="text" id="subjectName" name="subjectName" placeholder="Tên môn" required>
+                <input type="text" id="subjectDesc" name="description" placeholder="Mô tả">
+                <input type="file" name="imageFile" accept="image/*">
+                <div class="form-buttons">
+                    <button type="button" id="cancelBtn">Hủy</button>
+                    <button type="submit" id="saveBtn">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+    const modal = document.getElementById('subjectFormModal');
+    const form = document.getElementById('subjectForm');
+    const formTitle = document.getElementById('formTitle');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const addBtn = document.querySelector('.add-btn');
+
+    addBtn.addEventListener('click', () => {
+        form.reset();
+        document.getElementById('subjectId').value = '';
+        formTitle.textContent = 'Thêm môn học';
+        saveBtn.textContent = 'Thêm';
+        modal.classList.remove('hidden');
+    });
+
+    cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.preventDefault();
+            const row = btn.closest('tr');
+            document.getElementById('subjectId').value = row.dataset.id;
+            document.getElementById('subjectName').value = row.children[1].textContent;
+            document.getElementById('subjectDesc').value = row.children[2].textContent;
+            formTitle.textContent = 'Sửa môn học';
+            saveBtn.textContent = 'Lưu thay đổi';
+            modal.classList.remove('hidden');
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            if (confirm('Bạn có chắc muốn xóa môn học này không?')) {
+                fetch(`/admin/subject/delete/${id}`, { method: 'DELETE' })
+                    .then(res => res.text())
+                    .then(result => {
+                        if (result === 'success') {
+                            alert('Xóa thành công!');
+                            this.closest('tr').remove();
+                        } else {
+                            alert('Không thể xóa!');
+                        }
+                    });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

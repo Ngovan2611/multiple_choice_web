@@ -6,6 +6,7 @@
   <title>Thông tin cá nhân</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/profile.css">
+  <link rel="stylesheet" href="/css/contact.css">
 </head>
 <body>
 
@@ -73,7 +74,13 @@
       <p th:text="${user.email}">example@email.com</p>
     </div>
   </div>
-
+  <div class="info-card">
+    <div class="avatar">👤</div>
+    <div class="text">
+      <h3>Giáo viên chủ nhiêm</h3>
+      <span th:text="${teacher != null ? teacher.full_name : 'Chưa có giáo viên'}"></span>
+    </div>
+  </div>
   <div class="info-card">
     <div class="avatar">🔒</div>
     <div class="text">
@@ -81,6 +88,7 @@
       <p>********</p>
     </div>
   </div>
+
 
   <button class="edit-btn" id="openModal">Chỉnh sửa</button>
 </main>
@@ -120,6 +128,7 @@
         <input type="email" name="email" th:value="${user.email}" placeholder="Email">
       </div>
 
+
       <div class="form-item">
         <div class="avatar">🔒</div>
         <input type="password" name="password" placeholder="Mật khẩu mới (để trống nếu không đổi)">
@@ -132,7 +141,7 @@
     </form>
   </div>
 </div>
-
+<div th:replace="fragments/contact :: contact"></div>
 <footer>© 2025 ThiTot - Nền tảng thi trắc nghiệm</footer>
 
 <!-- SCRIPT -->
@@ -150,5 +159,6 @@
     if (e.target === overlay) overlay.style.display = 'none';
   });
 </script>
+<script src="/js/contact.js"></script>
 </body>
 </html>

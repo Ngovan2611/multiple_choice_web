@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản trị viên - Danh sách đề thi</title>
+    <link rel="stylesheet" href="/css/admin/index.css">
+    <link rel="stylesheet" href="/css/admin/teacherManage.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<style>
+    .question-counter-box {
+        position: fixed;
+        left: 20px;
+        top: 120px;
+        background: #2563eb;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: 600;
+        z-index: 9999;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .question-counter-box.hidden {
+        display: none;
+    }
+
+</style>
+<body>
+<div th:replace="~{admin/admin-header :: adminHeader}"></div>
+<main class="container">
+    <section class="teacher-list-section">
+        <div class="section-header">
+            <h2>Danh sách đề thi</h2>
+        </div>
+
+        <div class="add-btn-container">
+            <button class="add-btn">+ Thêm đề thi</button>
+        </div>
+
+        <!-- Bộ lọc -->
+        <div class="filter-box">
+            <span class="filter-title">Bộ lọc tìm kiếm</span>
+
+            <select id="filter-subject" class="filter-input">
+                <option value="">Môn học</option>
+                <option th:each="exams : ${exams}" th:value="${exams.subject.subjectId}" th:text="${exams.subject.subjectName}"></option>
+            </select>
+
+            <input type="text" id="filter-title" class="filter-input" placeholder="Tên đề thi">
+
+            <select id="filter-createdby" class="filter-input">
+                <option value="">Người tạo</option>
+                <option th:each="exam : ${exams}"
+                        th:if="${exam.createdBy != null}"
+                        th:value="${exam.createdBy.full_name}"
+                        th:text="${exam.createdBy.full_name}">
+                </option>
+            </select>
+        </div>
+
+        <!-- Bảng -->
+        <div id="examTableContainer">
+            <table class="teacher-table">
+                <thead>
+                <tr>
+                    <th>Mã đề</th>
+                    <th>Tên đề thi</th>
+                    <th>Môn học</th>
+                    <th>Số câu hỏi</th>
+                    <th>Thời gian</th>
+                    <th>Tạo bởi</th>
+                    <th>Ngày tạo</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+
+                <tbody id="examTableBody">
+                <tr th:each="exam : ${exams}" th:attr="data-id=${exam.examId}">
+                    <td th:text="${exam.examId}">EX001</td>
+                    <td th:text="${exam.examName}">Đề thi Toán 10</td>
+                    <td th:text="${exam.subject.subjectName}"
+                        th:data-subject-id="${exam.subject.subjectId}">Toán</td>
+                    <td th:text="${exam.totalQuestions}">40</td>
+                    <td th:text="${exam.duration + ' phút'}"></td>
+                    <td th:text="${exam.createdBy != null ? exam.createdBy.full_name : 'Chưa có'}"></td>
+                    <td th:text="${#strings.substring(exam.createdAt,0,16)}"></td>
+                    <td class="actions">
+                        <a href="#" class="edit-btn" title="Sửa">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
+                        <button type="button" class="delete-btn" th:data-id="${exam.examId}" title="Xóa">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Modal Thêm/Sửa -->
+    <div id="examFormModal" class="modal hidden">
+        <div class="modal-content big-modal">
+
+            <h2 id="formTitle">Thêm đề thi</h2>
+
+            <form id="examForm" th:action="@{/admin/exams/save-full}" method="post">
+                <input type="hidden" id="examId" name="examId">
+                <!-- THÔNG TIN ĐỀ THI -->
+                <div class="form-section">
+                    <label>Môn học</label>
+                    <select id="examSubject" name="subjectId" required>
+                        <option value="">-- Chọn môn học --</option>
+                        <option th:each="s : ${subjects}"
+                                th:value="${s.subjectId}"
+                                th:text="${s.subjectName}">
+                        </option>
+                    </select>
+
+                    <label>Tên đề</label>
+                    <input type="text" id="examTitle" name="title" placeholder="Tên đề" required>
+
+                    <label>Mô tả</label>
+                    <input type="text" id="examDesc" name="description" placeholder="Mô tả đề thi">
+
+                    <label>Số lượng câu hỏi</label>
+                    <input type="number" id="examQuestionCount" name="questionCount" required>
+
+                    <label>Thời gian làm bài (phút)</label>
+                    <input type="number" id="examDuration" name="duration" required>
+                </div>
+                <div id="questionCounterBox" class="question-counter-box hidden">
+                    Đã chọn: <b><span id="selectedCount">0</span></b> câu hỏi
+                </div>
+
+                <!-- THÊM CÂU HỎI -->
+                <h3 class="sub-title">Chọn câu hỏi từ ngân hàng</h3>
+
+                <div id="questionContainer">
+                    <p>Vui lòng chọn môn học để hiển thị câu hỏi.</p>
+                </div>
+
+
+
+                <div class="form-buttons">
+                    <button type="button" id="cancelBtn">Hủy</button>
+                    <button type="submit" id="saveBtn">Thêm</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</main>
+
+
+<script>
+
+    const modal = document.getElementById("examFormModal");
+    const form = document.getElementById("examForm");
+    const formTitle = document.getElementById("formTitle");
+    const saveBtn = document.getElementById("saveBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+
+    const subjectSelect = document.getElementById("examSubject");
+    const questionContainer = document.getElementById("questionContainer");
+
+    const fSubject = document.getElementById('filter-subject');
+    const fTitle = document.getElementById('filter-title');
+    const fCreated = document.getElementById('filter-createdby');
+
+
+    function filterExams() {
+        const s = fSubject ? fSubject.value.toLowerCase() : "";
+        const t = fTitle ? fTitle.value.toLowerCase() : "";
+        const c = fCreated ? fCreated.value.toLowerCase() : "";
+
+        document.querySelectorAll("#examTableBody tr").forEach(row => {
+            const subject = row.children[2].textContent.toLowerCase();
+            const title = row.children[1].textContent.toLowerCase();
+            const created = row.children[5].textContent.toLowerCase();
+
+            row.style.display =
+                (s === "" || subject.includes(s)) &&
+                title.includes(t) &&
+                (c === "" || created.includes(c))
+                    ? "" : "none";
+        });
+    }
+
+    if(fSubject) fSubject.addEventListener("input", filterExams);
+    if(fTitle) fTitle.addEventListener("input", filterExams);
+    if(fCreated) fCreated.addEventListener("input", filterExams);
+
+
+    function openModal() {
+        modal.classList.remove("hidden");
+    }
+
+    function closeModal() {
+        modal.classList.add("hidden");
+    }
+
+    // Gắn sự kiện đóng modal cho nút Hủy
+    if(cancelBtn) {
+        cancelBtn.addEventListener("click", closeModal);
+    }
+
+
+    const addBtn = document.querySelector(".add-btn");
+    if (addBtn) {
+        addBtn.addEventListener("click", () => {
+            form.reset();
+            document.getElementById("examId").value = ""; // Xóa ID để biết là thêm mới
+            formTitle.textContent = "Thêm đề thi";
+            saveBtn.textContent = "Thêm";
+
+            questionContainer.innerHTML = "<p>Vui lòng chọn môn học để hiển thị câu hỏi.</p>";
+
+            openModal();
+        });
+    }
+
+
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                const row = btn.closest("tr");
+                const examId = row.dataset.id;
+                const subjectId = row.children[2].getAttribute("data-subject-id");
+
+                document.getElementById("examId").value = examId;
+                document.getElementById("examTitle").value = row.children[1].textContent;
+                document.getElementById("examSubject").value = subjectId;
+                document.getElementById("examQuestionCount").value = row.children[3].textContent;
+
+                let durationText = row.children[4].textContent.replace(' phút', '').trim();
+                document.getElementById("examDuration").value = parseInt(durationText) || 0;
+
+                document.getElementById("examDesc").value = "";
+
+                formTitle.textContent = "Sửa đề thi";
+                saveBtn.textContent = "Lưu thay đổi";
+
+                questionContainer.innerHTML = "<p>Đang tải dữ liệu...</p>";
+
+
+                const resQuestions = await fetch(`/admin/questions/by-subject/${subjectId}`);
+                const questions = await resQuestions.json();
+
+                const resSelected = await fetch(`/admin/exams/${examId}/question-ids`);
+                const selectedIds = await resSelected.json();
+
+                questionContainer.innerHTML = "";
+                if (!questions || questions.length === 0) {
+                    questionContainer.innerHTML = "<p>Không có câu hỏi nào cho môn này.</p>";
+                } else {
+                    questions.forEach(q => {
+                        const isChecked = selectedIds.includes(q.questionId) ? "checked" : "";
+
+                        const block = document.createElement("div");
+                        block.className = "question-block";
+                        block.innerHTML = `
+                            <label>
+                                <input type="checkbox" name="questionIds" value="${q.questionId}" ${isChecked}>
+                                <b>${q.questionText}</b>
+                            </label>
+                            <div style="margin-top:10px; font-size: 0.9em; color: #555;">
+                                <div>A. ${q.answers.A}</div>
+                                <div>B. ${q.answers.B}</div>
+                                <div>C. ${q.answers.C}</div>
+                                <div>D. ${q.answers.D}</div>
+                            </div>
+                        `;
+                        questionContainer.appendChild(block);
+                    });
+                }
+
+                openModal();
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu sửa:", error);
+                alert("Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.");
+            }
+        });
+    });
+
+
+    document.querySelectorAll(".delete-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const id = button.dataset.id;
+            if (confirm("Bạn có chắc chắn muốn xóa đề thi này không?")) {
+                fetch(`/admin/exams/delete/${id}`, {method: "GET"}) // Hoặc DELETE tùy Controller
+                    .then(r => r.text())
+                    .then(res => {
+                        if (res === "success") {
+                            alert("Đã xóa thành công!");
+                            button.closest("tr").remove();
+                        } else {
+                            alert("Xóa thất bại.");
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("Lỗi kết nối đến máy chủ!");
+                    });
+            }
+        });
+    });
+
+
+    if(subjectSelect) {
+        subjectSelect.addEventListener("change", () => {
+            const subjectId = subjectSelect.value;
+            if (!subjectId) {
+                questionContainer.innerHTML = "<p>Chưa chọn môn học.</p>";
+                return;
+            }
+            fetch(`/admin/questions/by-subject/${subjectId}`)
+                .then(res => res.json())
+                .then(data => {
+                    questionContainer.innerHTML = "";
+                    if (data.length === 0) {
+                        questionContainer.innerHTML = "<p>Không có câu hỏi nào cho môn này.</p>";
+                        return;
+                    }
+                    data.forEach(q => {
+                        const block = document.createElement("div");
+                        block.className = "question-block";
+                        block.innerHTML = `
+                            <label>
+                                <input type="checkbox" name="questionIds" value="${q.questionId}">
+                                <b>${q.questionText}</b>
+                            </label>
+                            <div style="margin-top:10px; font-size: 0.9em;">
+                                 <div>A. ${q.answers.A}</div>
+                                 <div>B. ${q.answers.B}</div>
+                                 <div>C. ${q.answers.C}</div>
+                                 <div>D. ${q.answers.D}</div>
+                            </div>
+                        `;
+                        questionContainer.appendChild(block);
+                    });
+                })
+                .catch(err => console.error(err));
+        });
+    }
+    const counterBox = document.getElementById("questionCounterBox");
+    const counterText = document.getElementById("selectedCount");
+
+    function updateSelectedCount() {
+        const checked = document.querySelectorAll("input[name='questionIds']:checked");
+        counterText.textContent = checked.length;
+        document.getElementById("examQuestionCount").value = checked.length;
+    }
+
+    function attachCheckboxEvents() {
+        document.querySelectorAll("input[name='questionIds']").forEach(cb => {
+            cb.addEventListener("change", updateSelectedCount);
+        });
+    }
+
+    function showCounterBox() {
+        counterBox.classList.remove("hidden");
+        updateSelectedCount();
+    }
+
+    function hideCounterBox() {
+        counterBox.classList.add("hidden");
+    }
+
+    if (addBtn) {
+        addBtn.addEventListener("click", () => {
+            showCounterBox();
+            document.getElementById("examQuestionCount").value = 0;
+            counterText.textContent = "0";
+        });
+    }
+
+    setTimeout(() => {
+        attachCheckboxEvents();
+        updateSelectedCount();
+        showCounterBox();
+    }, 500);
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener("click", hideCounterBox);
+    }
+
+    questionContainer.addEventListener("change", function (e) {
+        if (e.target.name === "questionIds") {
+            updateSelectedCount();
+        }
+    });
+
+</script>
+
+</body>
+</html>

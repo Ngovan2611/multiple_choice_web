@@ -1,9 +1,8 @@
-package haui.csn.thitot.controller;
+package haui.csn.thitot.controller.user;
 
 
 import haui.csn.thitot.entity.User;
 import haui.csn.thitot.service.ResultService;
-import haui.csn.thitot.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,19 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
-
-import haui.csn.thitot.entity.Exam;
 import haui.csn.thitot.entity.Result;
-import haui.csn.thitot.entity.User;
-import haui.csn.thitot.service.ExamService;
 
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +27,13 @@ public class ResultController {
     @GetMapping("/history")
     public String history(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
-        if(user == null) {
+        if (user == null || user.getRole().equals("admin") || user.getRole().equals("teacher")) {
             return "redirect:/login";
         }
         List<Result> results = resultService.getResultsByUser(user);
         model.addAttribute("user", user);
         model.addAttribute("results", results);
-        return "history";
+        return "/user/history";
     }
 
 
@@ -62,11 +52,7 @@ public class ResultController {
                 userAnswers.put(qId, entry.getValue()); // Lưu A/B/C/D
             }
         }
-
         Result result = resultService.gradeExamAndSave(user, examId, userAnswers);
-
-        return "index";
+        return "redirect:/result/detail/" + result.getResultId();
     }
-
-
 }

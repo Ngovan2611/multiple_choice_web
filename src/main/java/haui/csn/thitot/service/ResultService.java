@@ -10,21 +10,15 @@ import java.util.*;
 
 @Service
 public class ResultService {
-
     @Autowired private QuestionService questionService;
     @Autowired private AnswerRepository answerRepository;
     @Autowired private ExamService examService;
     @Autowired private ResultRepository resultRepository;
     @Autowired private ExamAnswerRepository examAnswerRepository;
 
-    /**
-     * ✅
-     */
     public Result gradeExamAndSave(User user, Integer examId, Map<Integer, String> userAnswers) {
         List<Question> questions = questionService.getAllQuestionsByExam_Id(examId);
         int correct = 0, incorrect = 0;
-
-        // 🧾 Tạo đối tượng Result
         Result result = new Result();
         result.setUser(user);
         result.setExam(examService.getExamById(examId));
@@ -32,9 +26,7 @@ public class ResultService {
         result.setEndTime(LocalDateTime.now());
         result.setStatus(Result.Status.completed);
 
-        // Danh sách chi tiết câu trả lời
         List<ExamAnswer> examAnswers = new ArrayList<>();
-
         for (Question q : questions) {
             String userChoice = userAnswers.get(q.getQuestionId());
             if (userChoice == null) continue;
@@ -48,30 +40,30 @@ public class ResultService {
             ExamAnswer ea = new ExamAnswer();
             ea.setQuestion(q);
             ea.setResult(result);
-
             ea.setSelectedAnswerId(convertOptionToNumber(userChoice));
-
             ea.setIsCorrect(correctAnswer);
-
             ea.setAnsweredAt(LocalDateTime.now());
             examAnswers.add(ea);
         }
+        double score;
 
-        double score = (double) correct / questions.size() * 10.0;
+        if (questions.isEmpty()) {
+            score = 0.0;
+        } else {
+            score = (double) correct / questions.size() * 10.0;
+        }
+        if (Double.isNaN(score) || Double.isInfinite(score)) {
+            score = 0.0;
+        }
         result.setScore(score);
         result.setCorrectCount(correct);
         result.setIncorrectCount(incorrect);
-
         resultRepository.save(result);
-
         for (ExamAnswer ea : examAnswers) {
             examAnswerRepository.save(ea);
         }
-
         return result;
     }
-
-
     private Integer convertOptionToNumber(String option) {
         if (option == null) return null;
         return switch (option.toUpperCase()) {
@@ -82,11 +74,9 @@ public class ResultService {
             default -> null;
         };
     }
-
     public List<Result> getResultsByUser(User user) {
         return resultRepository.findByUser(user);
     }
-
     public Result getResultById(Integer id) {
         return resultRepository.findByResultId(id);
     }

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ngân hàng câu hỏi</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+        html {
+            overflow-y: scroll;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+        body { margin: 0; font-family: Arial, sans-serif; background: #fff; }
+
+        /* Header */
+        .header-title {
+            background: #a9d3ff;
+            padding: 12px 20px;
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Subject section */
+        .subject-box {
+            background: #66f88f;
+            padding: 30px 20px;
+            margin-top: 10px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn-blue {
+            background: #7a5cf4;
+            color: white;
+            margin-top: 10px;
+        }
+
+        /* Search */
+        .search-row {
+            margin: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-row input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .search-row button {
+            background: #7a5cf4;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #e1e1e1;
+        }
+
+        .icon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .icon:hover { color: #7a5cf4; }
+
+
+        /* ========= POPUP (GLOBAL STYLE) ========= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .modal {
+            background: white;
+            width: 450px;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .modal textarea,
+        .modal input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .modal-buttons {
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        .btn-cancel {
+            background: #ccc;
+        }
+
+        .btn-save {
+            background: #7a5cf4;
+            color: white;
+        }
+        .teacher-header {
+            background-color: #7a5cf4;
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(122, 92, 244, 0.3);
+            margin-bottom:20px;
+        }
+        .teacher-header h1 { margin: 0; font-size: 24px;color:white; }
+        .teacher-header h1 span { color: #ffe36d; }
+        .menu a {
+            color: white;
+            margin-left: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+        .menu a:hover { opacity: 1; }
+        a{
+            text-decoration: none;
+        }
+        .detail-display-box {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            min-height: 20px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+        }
+        .detail-textarea-style {
+            min-height: 60px;
+        }
+        .detail-correct-box {
+            display: inline-block;
+            padding: 5px 10px;
+            font-weight: bold;
+            color: white;
+            background-color: #38b466;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+<header class="teacher-header">
+    <a href="/teacher/home">
+        <h1>Thi<span>Tot</span></h1>
+    </a>
+    <nav class="menu">
+        <a href="/teacher/question_bank" style="opacity: 1; border-bottom: 2px solid white; padding-bottom: 5px;">Ngân hàng câu hỏi</a>
+        <a href="/teacher/exam">Đề thi</a>
+        <a href="/teacher/class">Lớp học</a>
+        <a href="/teacher/profile">Thông tin cá nhân</a>
+        <a href="/logout">Đăng xuất</a>
+    </nav>
+</header>
+<div class="header-title">
+    <i class='bx bx-book-alt'></i> Ngân hàng câu hỏi
+</div>
+
+<!-- ===================== CHỌN MÔN HỌC ===================== -->
+<div class="subject-box">
+    <h3>Môn học:</h3>
+
+    <form method="get" action="/teacher/question_bank">
+        <select name="subjectId" onchange="this.form.submit()">
+            <option value="">-- Chọn môn học --</option>
+
+            <option th:each="s : ${subjects}"
+                    th:value="${s.subjectId}"
+                    th:selected="${s.subjectId == selectedSubject}"
+                    th:text="${s.subjectName}">
+            </option>
+        </select>
+    </form>
+
+    <button th:if="${selectedSubject != null}"
+            class="btn btn-blue"
+            th:onclick="'openCreateModal(' + ${selectedSubject} + ')'"
+    > Tạo câu hỏi </button>
+</div>
+
+
+<!-- ===================== Ô TÌM KIẾM ===================== -->
+<div class="search-row" th:if="${selectedSubject != null}">
+    <form method="get" action="/teacher/question_bank" style="display: flex; width: 100%; gap: 10px;">
+        <input type="hidden" name="subjectId" th:value="${selectedSubject}">
+
+        <input type="text"
+               name="keyword"
+               placeholder="Nhập tên câu hỏi..."
+               th:value="${keyword}"
+               style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+
+        <button type="submit" style="background: #7a5cf4; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
+            Tìm kiếm
+        </button>
+    </form>
+</div>
+
+
+<!-- ===================== BẢNG CÂU HỎI ===================== -->
+<table th:if="${questions != null}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Câu hỏi</th>
+        <th>Chi tiết</th>
+        <th>Sửa</th>
+        <th>Xóa</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="q : ${questions}">
+        <td th:text="${q.questionId}"></td>
+        <td th:text="${q.questionText}"></td>
+
+        <td><i class='bx bx-search-alt icon' th:onclick="'openDetailModal(' + ${q.questionId} + ')'"></i></td>
+
+        <td><i class='bx bx-edit icon' th:onclick="'openEditModal(' + ${q.questionId} + ')'"></i></td>
+
+        <td>
+            <a th:href="@{/teacher/question_bank/delete/{id}(id=${q.questionId})}"
+               onclick="return confirm('Xóa câu hỏi?')">
+                <i class='bx bx-x-circle icon'></i>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- ===================== POPUP TẠO CÂU HỎI ===================== -->
+<div class="modal-overlay" id="createModal">
+    <div class="modal">
+        <h3>Tạo câu hỏi mới</h3>
+
+        <form method="post" action="/teacher/question_bank/create">
+
+            <!-- Môn học -->
+            <label><b>Môn học</b></label>
+            <select name="subjectId" id="create-subject-id" required>
+                <option value="">-- Chọn môn học --</option>
+                <option th:each="s : ${subjects}"
+                        th:value="${s.subjectId}"
+                        th:text="${s.subjectName}">
+                </option>
+            </select>
+
+            <!-- Nội dung -->
+            <label><b>Nội dung câu hỏi</b></label>
+            <textarea name="questionText" placeholder="Nhập nội dung câu hỏi..." required></textarea>
+
+            <!-- 4 đáp án -->
+            <input type="text" name="answerA" placeholder="Đáp án A" required>
+            <input type="text" name="answerB" placeholder="Đáp án B" required>
+            <input type="text" name="answerC" placeholder="Đáp án C" required>
+            <input type="text" name="answerD" placeholder="Đáp án D" required>
+
+            <select name="correct" required>
+                <option value="">-- Đáp án đúng --</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
+
+            <!-- Nút -->
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-cancel" onclick="closeCreateModal()">Hủy</button>
+                <button type="submit" class="btn btn-save">Tạo câu hỏi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- ===================== POPUP: CHI TIẾT ===================== -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal">
+        <h3 class="modal-title">Chi tiết câu hỏi</h3>
+
+        <label><b>Môn học:</b> <span id="detail-subject-name" class="detail-display-box"></span></label>
+
+        <label><b>Nội dung câu hỏi:</b></label>
+        <div id="detail-text" class="detail-display-box detail-textarea-style"></div>
+
+        <hr style="margin: 15px 0;">
+
+        <label><b>Đáp án A:</b> <span id="detail-answer-a" class="detail-display-box"></span></label>
+
+        <label><b>Đáp án B:</b> <span id="detail-answer-b" class="detail-display-box"></span></label>
+
+        <label><b>Đáp án C:</b> <span id="detail-answer-c" class="detail-display-box"></span></label>
+
+        <label><b>Đáp án D:</b> <span id="detail-answer-d" class="detail-display-box"></span></label>
+
+        <label><b>Đáp án đúng:</b> <span id="detail-correct-answer" class="detail-correct-box"></span></label>
+
+        <p><b>Hình ảnh:</b></p>
+        <img id="detail-image" style="width: 100%; margin-top: 10px; display:none; border-radius:6px;">
+
+        <div class="modal-buttons">
+            <button onclick="closeDetailModal()" class="btn btn-blue" style="background: #7a5cf4;">Trở về</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ===================== POPUP: CHỈNH SỬA ===================== -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <h3>Chỉnh sửa câu hỏi</h3>
+
+        <form method="post" action="/teacher/question_bank/update">
+            <input type="hidden" name="questionId" id="edit-id">
+
+            <label><b>Môn học:</b> <span id="edit-subject-name"></span></label>
+
+            <label><b>Nội dung câu hỏi</b></label>
+            <textarea name="questionText" id="edit-text" placeholder="Nhập nội dung câu hỏi..." required></textarea>
+
+            <label><b>URL Hình ảnh (Tùy chọn)</b></label>
+            <input type="text" name="imageUrl" id="edit-image" placeholder="Nhập URL hình ảnh">
+
+            <label><b>Đáp án A</b></label>
+            <input type="text" name="answerA" id="edit-answerA" placeholder="Đáp án A" required>
+            <label><b>Đáp án B</b></label>
+            <input type="text" name="answerB" id="edit-answerB" placeholder="Đáp án B" required>
+            <label><b>Đáp án C</b></label>
+            <input type="text" name="answerC" id="edit-answerC" placeholder="Đáp án C" required>
+            <label><b>Đáp án D</b></label>
+            <input type="text" name="answerD" id="edit-answerD" placeholder="Đáp án D" required>
+
+            <label><b>Đáp án đúng</b></label>
+            <select name="correct" id="edit-correct" required>
+                <option value="">-- Đáp án đúng --</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
+
+            <div class="modal-buttons">
+                <button type="button" onclick="closeEditModal()" class="btn btn-cancel">Hủy</button>
+                <button type="submit" class="btn btn-save">Cập nhật</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    /* ======== CREATE ======== */
+    function openCreateModal(subjectId) {
+        document.getElementById("create-subject-id").value = subjectId;
+        document.getElementById("createModal").style.display = "flex";
+    }
+
+    function closeCreateModal() {
+        document.getElementById("createModal").style.display = "none";
+    }
+
+
+    /* ======== DETAIL ======== */
+    function openDetailModal(id) {
+        fetch("/teacher/question_bank/api/question/" + id)
+            .then(r => {
+                if (!r.ok) {
+                    throw new Error(`HTTP error! status: ${r.status}`);
+                }
+                return r.json();
+            })
+            .then(q => {
+                // --- 1. Hiển thị thông tin cơ bản ---
+                document.getElementById("detail-text").innerText = q.questionText || 'Nội dung trống';
+
+                if (q.subject && q.subject.subjectName) {
+                    document.getElementById("detail-subject-name").innerText = q.subject.subjectName;
+                } else {
+                    document.getElementById("detail-subject-name").innerText = 'Không tải được Môn học (Lỗi FetchType?)';
+                }
+
+                // Xử lý hình ảnh
+                const detailImage = document.getElementById("detail-image");
+                if (q.imageUrl) {
+                    detailImage.src = q.imageUrl;
+                    detailImage.style.display = "block";
+                } else {
+                    detailImage.style.display = "none";
+                }
+
+                // --- 2. Hiển thị thông tin Đáp án ---
+                if (q.answer) {
+                    const answer = q.answer;
+                    document.getElementById("detail-answer-a").innerText = answer.answerA || '';
+                    document.getElementById("detail-answer-b").innerText = answer.answerB || '';
+                    document.getElementById("detail-answer-c").innerText = answer.answerC || '';
+                    document.getElementById("detail-answer-d").innerText = answer.answerD || '';
+                    document.getElementById("detail-correct-answer").innerText = answer.isCorrect || 'Chưa gán';
+                } else {
+                    // Đặt thông báo lỗi nếu không tải được đáp án
+                    document.getElementById("detail-answer-a").innerText = 'Lỗi: Không tải được đáp án.';
+                    document.getElementById("detail-correct-answer").innerText = 'Lỗi';
+                }
+
+                // Hiển thị Modal
+                document.getElementById("detailModal").style.display = "flex";
+            })
+            .catch(error => {
+                // Bắt lỗi nếu request thất bại hoặc JSON lỗi
+                console.error('Lỗi khi tải chi tiết câu hỏi:', error);
+                alert('Không thể tải chi tiết câu hỏi. Vui lòng kiểm tra console.');
+            });
+    }
+
+    function closeDetailModal() {
+        document.getElementById("detailModal").style.display = "none";
+    }
+
+    /* ======== EDIT ======== */
+    function openEditModal(id) {
+        fetch("/teacher/question_bank/api/question/" + id)
+            .then(r => r.json())
+            .then(q => {
+                // 1. Thông tin Question
+                document.getElementById("edit-id").value = q.questionId;
+                document.getElementById("edit-text").value = q.questionText;
+                document.getElementById("edit-image").value = q.imageUrl || '';
+                document.getElementById("edit-subject-name").innerText = q.subject.subjectName; // Hiển thị Môn học
+
+                // 2. Thông tin Answer
+                if (q.answer) {
+                    const answer = q.answer;
+                    document.getElementById("edit-answerA").value = answer.answerA;
+                    document.getElementById("edit-answerB").value = answer.answerB;
+                    document.getElementById("edit-answerC").value = answer.answerC;
+                    document.getElementById("edit-answerD").value = answer.answerD;
+                    document.getElementById("edit-correct").value = answer.isCorrect; // Chọn đáp án đúng
+                }
+
+                document.getElementById("editModal").style.display = "flex";
+            });
+    }
+    function closeEditModal() {
+        document.getElementById("editModal").style.display = "none";
+    }
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-package haui.csn.thitot.controller;
+package haui.csn.thitot.controller.user;
 
 
 import haui.csn.thitot.entity.User;
@@ -20,11 +20,14 @@ public class ProfileController {
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
-        if (user == null) {
+        if (user == null || user.getRole().equals("admin") || user.getRole().equals("teacher")) {
+            session.invalidate();
             return "redirect:/login";
         }
+        User teacher = userService.getTeacherByClassName(user.getClassName(), "teacher");
+        model.addAttribute("teacher", teacher);
         model.addAttribute("user", user);
-        return "profile";
+        return "/user/profile";
     }
 
     @PostMapping("/profile/update")
@@ -38,7 +41,7 @@ public class ProfileController {
             HttpSession session,
             Model model) {
 
-        User user = (User) session.getAttribute("user"); // ✅ Lấy trực tiếp từ session
+        User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
         }
@@ -48,20 +51,23 @@ public class ProfileController {
         user.setUsername(username);
         user.setClassName(className);
         user.setEmail(email);
+
         if (password != null && !password.isBlank()) {
             user.setPassword(password);
         }
 
         userService.save(user);
-        session.setAttribute("user", user); // ✅ Cập nhật lại session
+        session.setAttribute("user", user);
 
-        // 🔹 Thêm dòng này để tránh lỗi Thymeleaf
+        User teacher = userService.getTeacherByClassName(user.getClassName(), "teacher");
+
         model.addAttribute("user", user);
-
+        model.addAttribute("teacher", teacher);
         model.addAttribute("success", "Cập nhật thông tin thành công!");
 
-        return "profile"; // ✅ Giờ Thymeleaf có thể đọc được ${user.xxx}
+        return "/user/profile";
     }
+
 
 
 }

@@ -1,4 +1,4 @@
-package haui.csn.thitot.controller;
+package haui.csn.thitot.controller.user;
 
 
 import haui.csn.thitot.entity.Subject;
@@ -22,12 +22,13 @@ public class SubjectController {
     public String subject(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
 
-        if (user == null) {
+        if (user == null || user.getRole().equals("admin") || user.getRole().equals("teacher")) {
+            session.invalidate();
             return "redirect:/login";
         }
         model.addAttribute("user", user);
         List<Subject> subjects = subjectService.getAll();
         model.addAttribute("subjects", subjects);
-        return "subject";
+        return "/user/subject";
     }
 }

@@ -1,174 +1,183 @@
-   * {
+body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-
-a {
-    text-decoration: none;
-}
-
-.tittle a:hover {
-    color: #a145d3;
-}
-
-
-h1  {
-    background: transparent;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    border-radius: 40px;
-    width: 450px;
-    text-align: center;
-    transition: 0.5s;
-}
-
-
-body {
-    background: url('/image/color-year-purple-tones-abstract-landscape-with-fantasy-aesthetic.jpg');
-    background-size: cover; /* Phủ toàn bộ màn hình */
-    background-position: center; /* Căn giữa */
-    background-repeat: no-repeat; /* Không lặp */
-    height: 100vh; /* Chiều cao bằng toàn màn hình */
-    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background-color: #f3f4f6;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
 }
 
-.tittle {
-    position: absolute;
-    top: 40px; 
-    left: 50%;
-    transform: translateX(-50%);
-    color: white; 
-    font-size: 36px;
-    font-weight: bold;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-}
-#wrapper {
-    width: 500px;
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: rgb(0, 0, 0);
-    border-radius: 40px;
-    padding: 30px 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(20px);
+.container {
+    display: flex;
+    width: 950px;
+    height: 600px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
 }
 
-#wrapper h2 {
-    text-align: center;
-    font-size: 36px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 30px;
-}
-
-#wrapper .input-box {
-    width: 100%;
-    height: 50px;
-    margin: 30px 0;
+.login-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 50px;
     position: relative;
 }
 
-.input-box input {
+.login-box {
     width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
+    max-width: 340px;
+    position: relative;
+}
+
+.logo a {
+    font-weight: 600;
+    font-size: 20px;
+    color: #1a1a1a;
+    text-decoration: none;
+}
+
+h2 {
+    margin-top: 20px;
+    font-size: 28px;
+    color: #0d0d0d;
+    font-weight: 600;
+}
+
+p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.input-group {
+    position: relative;
+    margin-top: 16px;
+    width: 100%;
+}
+
+.input-group input {
+    width: 100%;
+    height: 46px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    padding-left: 42px;
+    padding-right: 42px;
+    background-color: #fafafa;
     outline: none;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius:40px ;
-    font-size: 16px;
-    color: #000000;
-    padding: 20px 45px 20px 20px;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s;
+    box-sizing: border-box;
 }
 
-
-.input-box input::placeholder{
-    color: rgb(0, 0, 0);
+.input-group input:focus {
+    border-color: #2563eb;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-.input-box i {
+.input-group i {
     position: absolute;
-    right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 20px;
+    font-size: 18px;
+    color: #9ca3af;
+    line-height: 1;
 }
 
-#wrapper .remember-fogot {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14.5px;
-    margin: -15px 0 15px;
+.input-group .bx-user,
+.input-group .bx-lock {
+    left: 14px;
 }
 
-.remember-fogot label input {
-    accent-color:  #000000;
-    margin-right: 3px;
-}
-.remember-fogot a{
-    color: #fff;
-    text-decoration: none;
-}
-
-.remember-fogot a:hover {
-    text-decoration: underline;
-    color: #000;
-}
-
-#wrapper .btn {
-    width: 100%;
-    height: 45px;
-    background: #fff;
-    border: none;
-    outline: none;
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.input-group .toggle {
+    right: 14px;
     cursor: pointer;
-    font-size: 16px;
-    color: #333;
-    font-weight: 600;
-    transition: 1s ease;
+    color: #9ca3af;
+    transition: color 0.2s ease;
+    pointer-events: auto;
 }
 
-#wrapper .btn:hover {
-    color: rgb(175, 35, 166);
-    transform: translateY(-5%);
+.input-group .toggle:hover {
+    color: #2563eb;
 }
 
-#wrapper .register-link {
-    font-size: 14.5px;
+.btn-login {
+    width: 100%;
+    height: 46px;
+    margin-top: 22px;
+    background-color: #1e4d2b;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.btn-login:hover {
+    background-color: #163a21;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Error box overlay (đè lên, không đẩy layout) --- */
+.error-box {
+    position: absolute;
+    top: calc(100% + 10px); /* nằm dưới nút login */
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.4s ease;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.error-box.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.error-box p {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 90%;
+    max-width: 320px;
     text-align: center;
-    margin: 20px 0 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.register-link a{
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
+
+.image-section {
+    flex: 1;
 }
 
-.register-link a:hover {
-    text-decoration: underline;
-    color: black;
+.image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.Login a{
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-}
-.Login {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.Login a:hover {
-    color: #000;
-    text-decoration: underline;
+@media (max-width: 850px) {
+    .container {
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+    }
+    .image-section {
+        display: none;
+    }
 }

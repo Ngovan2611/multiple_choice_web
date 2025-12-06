@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin cá nhân</title>
+    <link rel="stylesheet" href="/css/teacher/profile.css">
+</head>
+<style>
+    html, body {
+        height: 100%;
+    }
+    html {
+        overflow-y: scroll;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    footer {
+        margin-top: auto;
+    }
+</style>
+<body>
+
+<header class="teacher-header">
+    <h1>Thi<span>Tot</span></h1>
+    <nav class="menu">
+        <a href="/teacher/question_bank">Ngân hàng câu hỏi</a>
+        <a href="/teacher/exam">Đề thi</a>
+        <a href="/teacher/class">Lớp học</a>
+        <a href="/teacher/profile" style="opacity: 1; border-bottom: 2px solid white; padding-bottom: 5px;">Thông tin cá nhân</a>
+        <a href="/logout">Đăng xuất</a>
+    </nav>
+</header>
+
+<h2 class="title" th:text="${editMode} ? 'Chỉnh sửa thông tin' : 'Thông tin cá nhân'"></h2>
+
+<div class="profile-container">
+
+    <form th:if="${!editMode}">
+        <label>Họ và tên:</label>
+        <input type="text" th:value="${teacher.full_name}" disabled>
+
+        <label>Mã giáo viên:</label>
+        <input type="text" th:value="${teacher.id}" disabled>
+
+        <label>Số điện thoại:</label>
+        <input type="text" th:value="${teacher.phone}" disabled>
+
+        <label>Email:</label>
+        <input type="email" th:value="${teacher.email}" disabled>
+
+        <label>Mật khẩu:</label>
+        <input type="password" value="********" disabled>
+
+        <a href="/teacher/profile/edit" class="btn-main">Chỉnh sửa</a>
+    </form>
+
+    <form th:if="${editMode}" method="post" action="/teacher/profile/update">
+
+        <label>Họ và tên:</label>
+        <input type="text" name="full_name" th:value="${teacher.full_name}" required>
+
+        <label>Mã giáo viên:</label>
+        <input type="text" th:value="${teacher.username}" disabled>
+
+        <label>Số điện thoại:</label>
+        <input type="text" name="phone" th:value="${teacher.phone}" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" th:value="${teacher.email}" required>
+
+        <label>Mật khẩu mới:</label>
+        <input type="password" name="password">
+
+        <div class="btn-group">
+            <button type="submit" class="btn-save">Lưu lại</button>
+            <a href="/teacher/profile" class="btn-cancel">Hủy</a>
+        </div>
+
+
+    </form>
+
+</div>
+
+</body>
+</html>

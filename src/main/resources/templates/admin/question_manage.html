@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý câu hỏi</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin/index.css">
+    <link rel="stylesheet" href="/css/admin/question_manage.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+<div th:replace="~{admin/admin-header :: adminHeader}"></div>
+
+<main class="container">
+
+    <h2>Danh sách câu hỏi</h2>
+
+    <form class="top-actions" onsubmit="return false;">
+        <div class="filter-box">
+            <span>Bộ lọc tìm kiếm</span>
+
+            <select id="filterSubject" class="filter-input">
+                <option value="">Môn học</option>
+                <option th:each="s : ${subjects}"
+                        th:value="${s.subjectName}"
+                        th:text="${s.subjectName}">
+                </option>
+            </select>
+
+            <input type="text" id="filterKeyword"
+                   class="filter-input"
+                   placeholder="Nội dung câu hỏi">
+        </div>
+
+        <button type="button" onclick="openModal()" class="add-btn">+ Thêm câu hỏi</button>
+    </form>
+
+
+    <!-- ===== TABLE ===== -->
+    <table class="teacher-table">
+        <thead>
+        <tr>
+            <th>Mã</th>
+            <th>Câu hỏi</th>
+            <th>Môn học</th>
+            <th>Đáp án đúng</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody id="questionTable">
+        <tr th:each="q : ${questions}">
+            <td th:text="${q.questionId}"></td>
+            <td class="col-question" th:text="${q.questionText}"></td>
+            <td class="col-subject" th:text="${q.subject.subjectName}"></td>
+            <td th:text="${q.answer != null ? q.answer.isCorrect : 'Chưa có'}"></td>
+            <td class="actions">
+                <button type="button"
+                        class="edit-btn"
+                        onclick="openEditModal(this)"
+                        th:data-id="${q.questionId}"
+                        th:data-question="${q.questionText}"
+                        th:data-subject="${q.subject.subjectId}"
+                        th:data-a="${q.answer != null ? q.answer.answerA : ''}"
+                        th:data-b="${q.answer != null ? q.answer.answerB : ''}"
+                        th:data-c="${q.answer != null ? q.answer.answerC : ''}"
+                        th:data-d="${q.answer != null ? q.answer.answerD : ''}"
+                        th:data-correct="${q.answer != null ? q.answer.isCorrect : ''}"
+                        title="Sửa câu hỏi">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+
+                <!-- NÚT XÓA -->
+                <form th:action="@{/admin/question/delete/{id}(id=${q.questionId})}" method="post" style="display:inline;">
+                    <button type="submit"
+                            class="delete-btn"
+                            onclick="return confirm('Bạn có chắc muốn xóa câu hỏi này?')"
+                            title="Xóa câu hỏi">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </form>
+
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+</main>
+
+<div id="modal" class="modal hidden">
+    <div class="modal-content">
+        <h2 id="modalTitle">Thêm câu hỏi</h2>
+
+        <form id="questionForm" th:action="@{/admin/question/save}" method="post">
+
+            <!-- ID ẨN DÙNG CHO SỬA -->
+            <input type="hidden" name="questionId" id="questionId">
+
+            <textarea name="questionText" id="questionText"
+                      placeholder="Nội dung câu hỏi" required></textarea>
+
+            <select name="subjectId" id="subjectId" required>
+                <option value="">Chọn môn học</option>
+                <option th:each="s : ${subjects}"
+                        th:value="${s.subjectId}"
+                        th:text="${s.subjectName}">
+                </option>
+            </select>
+
+            <input name="answerA" id="answerA" placeholder="Đáp án A" required>
+            <input name="answerB" id="answerB" placeholder="Đáp án B" required>
+            <input name="answerC" id="answerC" placeholder="Đáp án C" required>
+            <input name="answerD" id="answerD" placeholder="Đáp án D" required>
+
+            <div class="correct-answer">
+                <span>Đáp án đúng:</span>
+                <label><input type="radio" name="correct" value="A"> A</label>
+                <label><input type="radio" name="correct" value="B"> B</label>
+                <label><input type="radio" name="correct" value="C"> C</label>
+                <label><input type="radio" name="correct" value="D"> D</label>
+            </div>
+
+
+            <div class="form-buttons">
+                <button type="button" id="cancelBtn" onclick="closeModal()">Hủy</button>
+                <button type="submit" id="saveBtn">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+<script>
+    const modal = document.getElementById("modal");
+
+    function openModal() {
+        modal.classList.remove("hidden");
+        document.getElementById("modalTitle").innerText = "Thêm câu hỏi";
+        document.getElementById("questionForm").action = "/admin/question/save";
+        document.getElementById("questionForm").reset();
+        document.getElementById("questionId").value = "";
+    }
+
+    function openEditModal(btn) {
+        modal.classList.remove("hidden");
+        document.getElementById("modalTitle").innerText = "Sửa câu hỏi";
+        document.getElementById("questionForm").action = "/admin/question/update";
+
+        document.getElementById("questionId").value = btn.dataset.id;
+        document.getElementById("questionText").value = btn.dataset.question;
+        document.getElementById("subjectId").value = btn.dataset.subject;
+
+        document.getElementById("answerA").value = btn.dataset.a;
+        document.getElementById("answerB").value = btn.dataset.b;
+        document.getElementById("answerC").value = btn.dataset.c;
+        document.getElementById("answerD").value = btn.dataset.d;
+
+        const correct = btn.dataset.correct;
+        document.querySelectorAll("input[name='correct']").forEach(radio => {
+            radio.checked = (radio.value === correct);
+        });
+    }
+
+    function closeModal() {
+        modal.classList.add("hidden");
+    }
+
+    modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    function autoFilter() {
+        const keyword = document.getElementById("filterKeyword").value.toLowerCase();
+        const subject = document.getElementById("filterSubject").value.toLowerCase();
+        const rows = document.querySelectorAll("#questionTable tr");
+
+        rows.forEach(row => {
+            const questionText = row.querySelector(".col-question").innerText.toLowerCase();
+            const subjectText = row.querySelector(".col-subject").innerText.toLowerCase();
+
+            const matchKeyword = questionText.includes(keyword);
+            const matchSubject = subject === "" || subjectText === subject;
+
+            row.style.display = (matchKeyword && matchSubject) ? "" : "none";
+        });
+    }
+
+    document.getElementById("filterKeyword").addEventListener("input", autoFilter);
+
+    document.getElementById("filterSubject").addEventListener("change", autoFilter);
+</script>
+
+
+
+</body>
+</html>
