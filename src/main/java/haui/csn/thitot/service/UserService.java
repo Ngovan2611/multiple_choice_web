@@ -48,18 +48,18 @@ public class UserService {
     }
 
     public List<User> getStudentsByTeacherClass(String teacherClass, String keyword, String sortDirection) {
-        // 1. Xử lý sắp xếp (Dùng JpaSort.unsafe để tránh lỗi dấu gạch dưới)
         Sort sort = JpaSort.unsafe(Sort.Direction.ASC, "full_name");
         if ("desc".equalsIgnoreCase(sortDirection)) {
             sort = JpaSort.unsafe(Sort.Direction.DESC, "full_name");
         }
 
-        // 2. Xử lý từ khóa
         if (keyword != null && keyword.trim().isEmpty()) {
             keyword = null;
         }
 
-        // 3. Gọi Repository với lớp của giáo viên
         return userRepository.findByClassAndName(teacherClass, keyword, sort);
+    }
+    public User getTeacherByClassName(String className, String role) {
+        return userRepository.findUserByClassNameAndRole(className, role);
     }
 }

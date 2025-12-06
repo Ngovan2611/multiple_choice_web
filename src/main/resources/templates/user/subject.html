@@ -6,7 +6,9 @@
   <title>Danh sách môn</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/subject.css">
-
+  <link rel="stylesheet" href="/css/contact.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
@@ -31,12 +33,14 @@
     <h2>Danh sách môn</h2>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Tìm kiếm môn học...">
-      <button id="searchBtn">🔍</button>
+      <button id="searchBtn">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+
     </div>
   </div>
 
   <div class="subject-container" id="subjectList">
-    <!-- Thymeleaf loop -->
     <div class="subject-card" th:each="sub : ${subjects}">
       <p class="subject-title" th:text="${sub.subjectName}">Tên môn</p>
 
@@ -53,7 +57,6 @@
           Chi tiết
         </button>
 
-        <!-- ✅ thêm data-id -->
         <button class="btn btn-primary"
                 th:attr="data-id=${sub.subjectId}, data-name=${sub.subjectName}"
                 onclick="openExam(this)">
@@ -66,13 +69,11 @@
 
 <footer>© 2025 ThiTot - Nền tảng thi trắc nghiệm</footer>
 
-<!-- Popup Vào thi -->
 <div class="overlay" id="popupExam">
   <div class="popup">
     <button class="close-btn" onclick="closePopup('popupExam')">✖</button>
     <h3>Vào Thi</h3>
 
-    <!-- Ẩn ID môn thi -->
     <input type="hidden" id="subjectId">
 
     <label>Môn thi</label>
@@ -92,7 +93,6 @@
   </div>
 </div>
 
-<!-- Popup Chi tiết -->
 <div class="overlay" id="popupDetails">
   <div class="popup popup-details">
     <button class="close-btn" onclick="closePopup('popupDetails')">✖</button>
@@ -129,9 +129,8 @@
     </table>
   </div>
 </div>
-
+<div th:replace="fragments/contact :: contact"></div>
 <script>
-  // ----- Tìm kiếm -----
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
   const subjectList = document.getElementById("subjectList");
@@ -163,14 +162,12 @@
   searchBtn.addEventListener("click", searchSubjects);
   searchInput.addEventListener("input", searchSubjects);
 
-  // ----- Popup Chi tiết -----
   function showDetails(btn) {
     document.getElementById('detailName').innerText = btn.getAttribute('data-name');
     document.getElementById('detailDesc').innerText = btn.getAttribute('data-desc');
     document.getElementById('popupDetails').classList.add('active');
   }
 
-  // ----- Popup Vào thi -----
   const difficultySelect = document.getElementById("difficulty");
   const questionCountInput = document.getElementById("questionCount");
 
@@ -200,7 +197,6 @@
     }
   });
 
-  // ----- Khi ấn “Vào thi” -----
   function submitExam() {
     const subjectId = document.getElementById('subjectId').value;
     const difficulty = document.getElementById('difficulty').value;
@@ -211,11 +207,10 @@
       return;
     }
 
-    // ✅ Chuyển hướng đúng format cho controller
     const url = `/start?subjectId=${subjectId}&difficulty=${encodeURIComponent(difficulty)}&count=${encodeURIComponent(questionCount)}`;
     window.location.href = url;
   }
 </script>
-
+<script src="/js/contact.js"></script>
 </body>
 </html>

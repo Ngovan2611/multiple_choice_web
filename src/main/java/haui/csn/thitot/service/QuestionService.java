@@ -3,6 +3,7 @@ package haui.csn.thitot.service;
 
 import haui.csn.thitot.entity.Question;
 import haui.csn.thitot.entity.Subject;
+import haui.csn.thitot.repository.ExamAnswerRepository;
 import haui.csn.thitot.repository.ExamRepository;
 import haui.csn.thitot.repository.QuestionRepository;
 import haui.csn.thitot.repository.SubjectRepository;
@@ -17,6 +18,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private ExamAnswerRepository examAnswerRepository;
 
 
     @Autowired
@@ -41,7 +45,6 @@ public class QuestionService {
     public List<Question> getQuestionsBySubject(Integer subjectId) {
         return questionRepository.findBySubject_SubjectId (subjectId);
     }
-    // Tìm theo keyword (nếu bạn dùng)
     public List<Question> search(String keyword) {
         return questionRepository.findByQuestionTextContainingIgnoreCase(keyword);
     }
@@ -73,10 +76,16 @@ public class QuestionService {
         questionRepository.save(q);
     }
 
-    // Xóa câu hỏi
     public void delete(Integer id) {
+
+        if (examAnswerRepository.existsByQuestion_QuestionId(id)) {
+            throw new RuntimeException("Không thể xóa câu hỏi vì đã có dữ liệu làm bài!");
+        }
+
+        // ✅ Nếu chưa có ai làm → cho phép xóa
         questionRepository.deleteById(id);
     }
+
 
     public Question findById(Integer id) {
         return questionRepository.findById(id).orElse(null);

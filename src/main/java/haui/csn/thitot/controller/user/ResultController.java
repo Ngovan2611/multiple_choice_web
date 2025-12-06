@@ -28,7 +28,6 @@ public class ResultController {
     public String history(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || user.getRole().equals("admin") || user.getRole().equals("teacher")) {
-            session.invalidate();
             return "redirect:/login";
         }
         List<Result> results = resultService.getResultsByUser(user);
@@ -53,11 +52,7 @@ public class ResultController {
                 userAnswers.put(qId, entry.getValue()); // Lưu A/B/C/D
             }
         }
-
         Result result = resultService.gradeExamAndSave(user, examId, userAnswers);
-
-        return "/user/index";
+        return "redirect:/result/detail/" + result.getResultId();
     }
-
-
 }

@@ -67,7 +67,7 @@ public class SubjectManageController {
                         uploadPath.resolve(fileName),
                         StandardCopyOption.REPLACE_EXISTING);
 
-                subject.setImageUrl("/image/" + fileName); // Lưu đường dẫn đầy đủ tới ảnh
+                subject.setImageUrl("/image/" + fileName);
             }
 
             subject.setSubjectName(subjectName);

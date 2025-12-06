@@ -5,7 +5,6 @@ body {
     color: #333;
 }
 
-/* 🔍 Thanh tìm kiếm tổng */
 .search-bar-container {
     display: flex;
     justify-content: center;
@@ -36,7 +35,6 @@ body {
     font-size: 1.2rem;
 }
 
-/* 🟣 Nút thêm giáo viên */
 .add-btn-container {
     display: flex;
     justify-content: flex-end;
@@ -59,7 +57,6 @@ body {
     background-color: #55349a;
 }
 
-/* Bộ lọc */
 .filter-box {
     display: flex;
     align-items: center;
@@ -86,7 +83,7 @@ body {
     box-shadow: 0 0 0 2px #b794f4;
 }
 
-/* Bảng */
+
 .teacher-table {
     width: 100%;
     border-collapse: collapse;
@@ -112,29 +109,36 @@ body {
 
 .actions {
     display: flex;
+    gap: 12px;
     justify-content: center;
-    gap: 8px;
+    align-items: center;
 }
 
-.edit-btn {
-    color: #6b46c1;
-    text-decoration: none;
-    font-size: 1.1rem;
-}
-
+.edit-btn,
 .delete-btn {
     border: none;
-    background: transparent;
-    color: #e53e3e;
+    background: none;
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 16px;
+    padding: 6px;
 }
 
-.delete-btn:hover {
-    transform: scale(1.1);
+.edit-btn i {
+    color: #3498db;
 }
 
-/* 🌸 Modal thêm/sửa giáo viên */
+.delete-btn i {
+    color: #e74c3c;
+}
+
+.edit-btn:hover i {
+    color: #21618c;
+}
+
+.delete-btn:hover i {
+    color: #c0392b;
+}
+
 .modal {
     position: fixed;
     top: 0; left: 0;
@@ -236,4 +240,46 @@ body {
 .error-message.show {
     opacity: 1;
     transform: translateY(0);
+}
+.big-modal {
+    width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.form-section label,
+.question-block label {
+    font-weight: 600;
+    margin-top: 15px;
+    display: block;
+}
+
+.question-block {
+    background: #f6e6ff;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border: 2px solid #e9d4ff;
+}
+
+.sub-title {
+    margin-top: 30px;
+    text-align: center;
+    color: #4c1d95;
+}
+.hidden { display: none !important; }
+html, body {
+    height: 100%;
+}
+html {
+    overflow-y: scroll;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    margin-top: auto;
 }

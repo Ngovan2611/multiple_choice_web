@@ -20,7 +20,7 @@ public class Question {
     private Integer questionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exam_id", nullable = false)
+    @JoinColumn(name = "exam_id")
     @JsonIgnore
     private Exam exam;
     @ManyToOne(fetch = FetchType.EAGER)

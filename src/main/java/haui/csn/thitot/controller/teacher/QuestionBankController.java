@@ -103,7 +103,7 @@ public class QuestionBankController {
                                  @RequestParam String correct) {
 
         Question q = questionService.getQuestionsById(questionId);
-        Integer subjectId = q.getSubject().getSubjectId();
+        int subjectId = q.getSubject().getSubjectId();
 
         q.setQuestionText(questionText);
         q.setImageUrl(imageUrl);

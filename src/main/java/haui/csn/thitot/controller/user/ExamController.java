@@ -41,7 +41,7 @@ public class ExamController {
         }
         model.addAttribute("user", user);
 
-        List<Exam> exams = examService.getExamByCreateBy();
+        List<Exam> exams = examService.getAll();
         model.addAttribute("exams", exams);
 
         return "/user/exam";

@@ -46,9 +46,6 @@ public class ExamService {
         return examRepository.findRandomExamBySubjectAndQuestions(subjectId, questionCount);
     }
 
-    public List<Exam> getExamByCreateBy() {
-        return examRepository.findAllByTeacherRole();
-    }
     public Exam getExamById(Integer examId) {
         return examRepository.findById(examId).get();
     }

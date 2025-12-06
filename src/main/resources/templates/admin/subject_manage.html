@@ -5,45 +5,12 @@
     <title>Quản trị viên - Danh sách môn học</title>
     <link rel="stylesheet" href="/css/admin/teacherManage.css">
     <link rel="stylesheet" href="/css/admin/index.css">
-
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+<div th:replace="~{admin/admin-header :: adminHeader}"></div>
 
-<header>
-    <div class="menu-container">
-        <div class="menu-trigger">☰</div>
-
-        <div class="sidebar">
-            <div class="menu-item">
-                Quản lý người dùng
-                <div class="submenu">
-                    <a th:href="@{/admin/student_manage}">Quản lý học sinh</a>
-                    <a th:href="@{/admin/teacher_manage}">Quản lý giáo viên</a>
-                </div>
-            </div>
-
-
-            <div class="menu-item">
-                <a th:href="@{/admin/subject_manage}" style="text-decoration:none; color:inherit;">Quản lý môn học</a>
-            </div>
-            <div class="menu-item">
-                <a th:href="@{/admin/exam_manage}" style="text-decoration:none; color:inherit;">Quản lý đề thi</a>
-            </div>
-            <div class="menu-item">
-                <a th:href="@{/admin/questions}" style="text-decoration:none; color:inherit;">Quản lý câu hỏi</a>
-            </div>
-            <div class="menu-item">
-                <a th:href="@{/admin/statistics}" style="text-decoration:none; color:inherit;">Thống kê / Báo cáo</a>
-            </div>
-            <div class="logout-item">
-                <a th:href="@{/logout}">Đăng xuất</a>
-            </div>
-        </div>
-    </div>
-
-    <h1>Quản trị viên</h1>
-    <div class="logo">Logo</div>
-</header>
 <main class="container">
     <section class="teacher-list-section">
         <div class="section-header">
@@ -76,9 +43,15 @@
                         <img th:if="${subject.imageUrl != null}" th:src="@{${subject.imageUrl}}" alt="Ảnh" width="50">
                     </td>
                     <td class="actions">
-                        <a href="#" class="edit-btn">✏️</a>
-                        <button type="button" class="delete-btn" th:data-id="${subject.subjectId}">🗑️</button>
+                        <a href="#" class="edit-btn" title="Sửa">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
+                        <button type="button" class="delete-btn" th:data-id="${subject.subjectId}" title="Xóa">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     </td>
+
                 </tr>
                 </tbody>
             </table>

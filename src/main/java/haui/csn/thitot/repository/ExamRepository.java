@@ -25,10 +25,6 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
             @Param("subjectId") Integer subjectId,
             @Param("totalQuestions") Integer totalQuestions
     );
-
-    @Query("SELECT e FROM Exam e WHERE e.createdBy.role = 'teacher'")
-    List<Exam> findAllByTeacherRole();
-
     @Query(value = """
         SELECT e.*
         FROM exams e
@@ -40,17 +36,10 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
     @Query(value = "INSERT INTO exam_question (exam_id, question_id) VALUES (:examId, :questionId)", nativeQuery = true)
     void insert(@Param("examId") Integer examId, @Param("questionId") Integer questionId);
     Exam findFirstBySubject_SubjectId(Integer subjectId);
-    // Tìm tất cả đề thi được tạo bởi một User ID cụ thể
     List<Exam> findByCreatedBy_Id(Integer userId);
-    // Chỉ Lọc theo Môn học
     List<Exam> findByCreatedBy_IdAndSubject_SubjectId(Integer teacherId, Integer subjectId);
-
-    // Chỉ Tìm kiếm theo Từ khóa
     List<Exam> findByCreatedBy_IdAndExamNameContainingIgnoreCase(Integer teacherId, String keyword);
-
-    // Lọc theo Môn học VÀ Từ khóa
     List<Exam> findByCreatedBy_IdAndSubject_SubjectIdAndExamNameContainingIgnoreCase(Integer teacherId, Integer subjectId, String keyword);
-
     @Modifying
     @Transactional
     @Query("UPDATE Exam e SET e.totalQuestions = ?2 WHERE e.examId = ?1")
