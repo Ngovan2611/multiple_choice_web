@@ -17,7 +17,6 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
     List<Question> findByExam_ExamId(Integer examId);
 
-
     @Modifying
     @Transactional
     @Query("UPDATE Question q SET q.exam = NULL WHERE q.exam.examId = ?1")

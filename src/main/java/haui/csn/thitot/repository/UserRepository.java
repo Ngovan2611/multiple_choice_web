@@ -26,4 +26,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByClassAndName(@Param("className") String className,
                                   @Param("keyword") String keyword,
                                   Sort sort);
+    User findUserByClassNameAndRole(String className, String role);
 }

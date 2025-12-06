@@ -29,6 +29,6 @@ public interface ExamAnswerRepository extends JpaRepository<ExamAnswer, Integer>
         WHERE ea.result.resultId = :resultId
     """)
     List<ExamAnswer> findByResultId(@Param("resultId") Integer resultId);
-
+    boolean existsByQuestion_QuestionId(Integer questionId);
 }
 

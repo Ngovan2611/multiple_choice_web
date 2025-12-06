@@ -4,13 +4,27 @@
       box-sizing: border-box;
       font-family: "Poppins", sans-serif;
     }
+    html, body {
+        height: 100%;
+    }
+    html {
+        overflow-y: scroll;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    footer {
+        margin-top: auto;
+    }
 
       body {
       font-family: "Segoe UI", sans-serif;
       margin: 0;
       background: linear-gradient(to bottom right, #e9dbff, #FFFFFF);
     }
-    /* ----- HEADER ----- */
 
     header {
       display: flex;
@@ -20,10 +34,10 @@
       border-bottom: 1px solid #e5e5e5;
     }
 
-    /* Logo */
+
     .logo {
-      text-decoration: none; /* bỏ gạch chân */
-      color: inherit; /* giữ nguyên màu chữ */
+      text-decoration: none;
+      color: inherit;
       display: inline-block;
     }
 
@@ -43,20 +57,40 @@
       gap: 30px;
     }
 
+
     .menu ul li a {
-      text-decoration: none;
-      color: #000;
-      font-size: 16px;
-      transition: 0.3s;
+        position: relative;
+        color: #000;
+        font-size: 16px;
+        text-decoration: none;
+        padding: 6px 0;
+        transition: color 0.25s ease;
     }
 
-    .menu ul li a:hover {
-      color: #007bff;
+    .menu ul li a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 0%;
+        height: 2px;
+        background: #6f42c1;
+        border-radius: 2px;
+        transition: width 0.3s ease;
     }
+
+    .menu ul li a:hover::after {
+        width: 100%;
+    }
+
     footer {
         background-color: #000;
         height: 60px;
         color: #fff;
         text-align: center;
         line-height: 60px;
+    }
+    .menu ul li a:hover {
+        color: #6f42c1;
+        transform: translateY(-1px);
     }

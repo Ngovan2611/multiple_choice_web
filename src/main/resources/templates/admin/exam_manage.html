@@ -5,73 +5,31 @@
     <title>Quản trị viên - Danh sách đề thi</title>
     <link rel="stylesheet" href="/css/admin/index.css">
     <link rel="stylesheet" href="/css/admin/teacherManage.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
-<body>
 <style>
-    .big-modal {
-        width: 900px;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-
-    .form-section label,
-    .question-block label {
+    .question-counter-box {
+        position: fixed;
+        left: 20px;
+        top: 120px;
+        background: #2563eb;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 8px;
         font-weight: 600;
-        margin-top: 15px;
-        display: block;
+        z-index: 9999;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
-    .question-block {
-        background: #f6e6ff;
-        padding: 20px;
-        border-radius: 15px;
-        margin-bottom: 20px;
-        border: 2px solid #e9d4ff;
+    .question-counter-box.hidden {
+        display: none;
     }
 
-    .sub-title {
-        margin-top: 30px;
-        text-align: center;
-        color: #4c1d95;
-    }
-    .hidden { display: none !important; }
 </style>
-<header>
-    <div class="menu-container">
-        <div class="menu-trigger">☰</div>
-
-        <div class="sidebar">
-            <div class="menu-item">
-                Quản lý người dùng
-                <div class="submenu">
-                    <a th:href="@{/admin/student_manage}">Quản lý học sinh</a>
-                    <a th:href="@{/admin/teacher_manage}">Quản lý giáo viên</a>
-                </div>
-            </div>
-
-
-            <div class="menu-item">
-                <a th:href="@{/admin/subject_manage}" style="text-decoration:none; color:inherit;">Quản lý môn học</a>
-            </div>
-            <div class="menu-item">
-                <a th:href="@{/admin/exam_manage}" style="text-decoration:none; color:inherit;">Quản lý đề thi</a>
-            </div>
-            <div class="menu-item">
-                <a th:href="@{/admin/questions}" style="text-decoration:none; color:inherit;">Quản lý câu hỏi</a>
-            </div>
-            <div class="menu-item">
-                <a th:href="@{/admin/statistics}" style="text-decoration:none; color:inherit;">Thống kê / Báo cáo</a>
-            </div>
-            <div class="logout-item">
-                <a th:href="@{/logout}">Đăng xuất</a>
-            </div>
-        </div>
-    </div>
-
-    <h1>Quản trị viên</h1>
-    <div class="logo">Logo</div>
-</header>
-
+<body>
+<div th:replace="~{admin/admin-header :: adminHeader}"></div>
 <main class="container">
     <section class="teacher-list-section">
         <div class="section-header">
@@ -130,9 +88,15 @@
                     <td th:text="${exam.createdBy != null ? exam.createdBy.full_name : 'Chưa có'}"></td>
                     <td th:text="${#strings.substring(exam.createdAt,0,16)}"></td>
                     <td class="actions">
-                        <a href="#" class="edit-btn">✏️</a>
-                        <button type="button" class="delete-btn" th:data-id="${exam.examId}">🗑️</button>
+                        <a href="#" class="edit-btn" title="Sửa">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
+                        <button type="button" class="delete-btn" th:data-id="${exam.examId}" title="Xóa">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     </td>
+
                 </tr>
                 </tbody>
             </table>
@@ -170,6 +134,9 @@
                     <label>Thời gian làm bài (phút)</label>
                     <input type="number" id="examDuration" name="duration" required>
                 </div>
+                <div id="questionCounterBox" class="question-counter-box hidden">
+                    Đã chọn: <b><span id="selectedCount">0</span></b> câu hỏi
+                </div>
 
                 <!-- THÊM CÂU HỎI -->
                 <h3 class="sub-title">Chọn câu hỏi từ ngân hàng</h3>
@@ -191,10 +158,9 @@
 
 </main>
 
+
 <script>
-    // ==========================================
-    // 0. KHAI BÁO BIẾN TOÀN CỤC (Đưa lên đầu để tránh lỗi)
-    // ==========================================
+
     const modal = document.getElementById("examFormModal");
     const form = document.getElementById("examForm");
     const formTitle = document.getElementById("formTitle");
@@ -204,14 +170,11 @@
     const subjectSelect = document.getElementById("examSubject");
     const questionContainer = document.getElementById("questionContainer");
 
-    // Các input bộ lọc
     const fSubject = document.getElementById('filter-subject');
     const fTitle = document.getElementById('filter-title');
     const fCreated = document.getElementById('filter-createdby');
 
-    // ==========================================
-    // 1. XỬ LÝ BỘ LỌC (FILTER)
-    // ==========================================
+
     function filterExams() {
         const s = fSubject ? fSubject.value.toLowerCase() : "";
         const t = fTitle ? fTitle.value.toLowerCase() : "";
@@ -234,9 +197,7 @@
     if(fTitle) fTitle.addEventListener("input", filterExams);
     if(fCreated) fCreated.addEventListener("input", filterExams);
 
-    // ==========================================
-    // 2. CÁC HÀM HỖ TRỢ MODAL
-    // ==========================================
+
     function openModal() {
         modal.classList.remove("hidden");
     }
@@ -250,9 +211,7 @@
         cancelBtn.addEventListener("click", closeModal);
     }
 
-    // ==========================================
-    // 3. CHỨC NĂNG: THÊM ĐỀ THI
-    // ==========================================
+
     const addBtn = document.querySelector(".add-btn");
     if (addBtn) {
         addBtn.addEventListener("click", () => {
@@ -261,60 +220,48 @@
             formTitle.textContent = "Thêm đề thi";
             saveBtn.textContent = "Thêm";
 
-            // Reset danh sách câu hỏi
             questionContainer.innerHTML = "<p>Vui lòng chọn môn học để hiển thị câu hỏi.</p>";
 
             openModal();
         });
     }
 
-    // ==========================================
-    // 4. CHỨC NĂNG: SỬA ĐỀ THI
-    // ==========================================
+
     document.querySelectorAll(".edit-btn").forEach(btn => {
         btn.addEventListener("click", async (e) => {
             e.preventDefault();
             try {
                 const row = btn.closest("tr");
                 const examId = row.dataset.id;
-                // Lấy subjectId từ thuộc tính data (bạn nhớ thêm th:data-subject-id vào HTML nhé)
                 const subjectId = row.children[2].getAttribute("data-subject-id");
 
-                // A. Điền thông tin cơ bản
                 document.getElementById("examId").value = examId;
                 document.getElementById("examTitle").value = row.children[1].textContent;
                 document.getElementById("examSubject").value = subjectId;
                 document.getElementById("examQuestionCount").value = row.children[3].textContent;
 
-                // Xử lý thời gian (bỏ chữ 'phút' nếu có)
                 let durationText = row.children[4].textContent.replace(' phút', '').trim();
                 document.getElementById("examDuration").value = parseInt(durationText) || 0;
 
-                // Nếu có cột mô tả ẩn, bạn có thể lấy giá trị ở đây. Tạm thời để trống hoặc giữ nguyên.
                 document.getElementById("examDesc").value = "";
 
                 formTitle.textContent = "Sửa đề thi";
                 saveBtn.textContent = "Lưu thay đổi";
 
-                // B. Tải danh sách câu hỏi
                 questionContainer.innerHTML = "<p>Đang tải dữ liệu...</p>";
 
-                // B1. Lấy tất cả câu hỏi của môn học (dùng API tìm câu hỏi tự do + câu của đề này)
-                // Lưu ý: Cần đảm bảo backend hỗ trợ logic này, hoặc dùng API lấy toàn bộ câu hỏi môn học
+
                 const resQuestions = await fetch(`/admin/questions/by-subject/${subjectId}`);
                 const questions = await resQuestions.json();
 
-                // B2. Lấy danh sách ID câu hỏi đã có trong đề thi này
                 const resSelected = await fetch(`/admin/exams/${examId}/question-ids`);
                 const selectedIds = await resSelected.json();
 
-                // C. Vẽ lại giao diện câu hỏi
                 questionContainer.innerHTML = "";
                 if (!questions || questions.length === 0) {
                     questionContainer.innerHTML = "<p>Không có câu hỏi nào cho môn này.</p>";
                 } else {
                     questions.forEach(q => {
-                        // Kiểm tra tích chọn
                         const isChecked = selectedIds.includes(q.questionId) ? "checked" : "";
 
                         const block = document.createElement("div");
@@ -343,9 +290,7 @@
         });
     });
 
-    // ==========================================
-    // 5. CHỨC NĂNG: XÓA ĐỀ THI
-    // ==========================================
+
     document.querySelectorAll(".delete-btn").forEach(button => {
         button.addEventListener("click", () => {
             const id = button.dataset.id;
@@ -368,20 +313,14 @@
         });
     });
 
-    // ==========================================
-    // 6. XỬ LÝ KHI CHỌN MÔN HỌC (Ở chế độ Thêm mới)
-    // ==========================================
+
     if(subjectSelect) {
         subjectSelect.addEventListener("change", () => {
-            // Nếu đang ở chế độ Sửa (có examId), có thể bạn không muốn reset danh sách
-            // Nhưng nếu người dùng chủ động đổi môn, ta vẫn tải lại câu hỏi môn mới
             const subjectId = subjectSelect.value;
-
             if (!subjectId) {
                 questionContainer.innerHTML = "<p>Chưa chọn môn học.</p>";
                 return;
             }
-
             fetch(`/admin/questions/by-subject/${subjectId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -411,6 +350,54 @@
                 .catch(err => console.error(err));
         });
     }
+    const counterBox = document.getElementById("questionCounterBox");
+    const counterText = document.getElementById("selectedCount");
+
+    function updateSelectedCount() {
+        const checked = document.querySelectorAll("input[name='questionIds']:checked");
+        counterText.textContent = checked.length;
+        document.getElementById("examQuestionCount").value = checked.length;
+    }
+
+    function attachCheckboxEvents() {
+        document.querySelectorAll("input[name='questionIds']").forEach(cb => {
+            cb.addEventListener("change", updateSelectedCount);
+        });
+    }
+
+    function showCounterBox() {
+        counterBox.classList.remove("hidden");
+        updateSelectedCount();
+    }
+
+    function hideCounterBox() {
+        counterBox.classList.add("hidden");
+    }
+
+    if (addBtn) {
+        addBtn.addEventListener("click", () => {
+            showCounterBox();
+            document.getElementById("examQuestionCount").value = 0;
+            counterText.textContent = "0";
+        });
+    }
+
+    setTimeout(() => {
+        attachCheckboxEvents();
+        updateSelectedCount();
+        showCounterBox();
+    }, 500);
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener("click", hideCounterBox);
+    }
+
+    questionContainer.addEventListener("change", function (e) {
+        if (e.target.name === "questionIds") {
+            updateSelectedCount();
+        }
+    });
+
 </script>
 
 </body>

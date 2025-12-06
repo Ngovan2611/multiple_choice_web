@@ -6,6 +6,7 @@
   <title>Đề thi</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/exam.css">
+  <link rel="stylesheet" href="/css/contact.css">
 </head>
 
 <body>
@@ -46,7 +47,7 @@
     </div>
   </div>
 </main>
-
+<div th:replace="fragments/contact :: contact"></div>
 <footer>© 2025 ThiTot - Nền tảng thi trắc nghiệm</footer>
 
 <!-- Popup Vào thi -->
@@ -89,5 +90,6 @@
     document.getElementById('popupExam').classList.remove('active');
   }
 </script>
+<script src="/js/contact.js"></script>
 </body>
 </html>

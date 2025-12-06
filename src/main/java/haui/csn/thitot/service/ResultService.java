@@ -45,7 +45,16 @@ public class ResultService {
             ea.setAnsweredAt(LocalDateTime.now());
             examAnswers.add(ea);
         }
-        double score = (double) correct / questions.size() * 10.0;
+        double score;
+
+        if (questions.isEmpty()) {
+            score = 0.0;
+        } else {
+            score = (double) correct / questions.size() * 10.0;
+        }
+        if (Double.isNaN(score) || Double.isInfinite(score)) {
+            score = 0.0;
+        }
         result.setScore(score);
         result.setCorrectCount(correct);
         result.setIncorrectCount(incorrect);

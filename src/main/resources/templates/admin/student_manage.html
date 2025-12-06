@@ -5,43 +5,13 @@
     <title>Quản trị viên - Danh sách học sinh</title>
     <link rel="stylesheet" href="/css/admin/teacherManage.css">
     <link rel="stylesheet" href="/css/admin/index.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
-<header>
-    <div class="menu-container">
-        <div class="menu-trigger">☰</div>
+    <div th:replace="~{admin/admin-header :: adminHeader}"></div>
 
-        <div class="sidebar">
-            <div class="menu-item">
-                Quản lý người dùng
-                <div class="submenu">
-                    <a th:href="@{/admin/student_manage}">Quản lý học sinh</a>
-                    <a th:href="@{/admin/teacher_manage}">Quản lý giáo viên</a>
-                </div>
-            </div>
-
-
-            <div class="menu-item">
-                <a th:href="@{/admin/subject_manage}" style="text-decoration:none; color:inherit;">Quản lý môn học</a>
-            </div>
-            <div class="menu-item">
-                <a th:href="@{/admin/exam_manage}" style="text-decoration:none; color:inherit;">Quản lý đề thi</a>
-            </div>
-            <div class="menu-item">
-                <a th:href="@{/admin/questions}" style="text-decoration:none; color:inherit;">Quản lý câu hỏi</a>
-            </div>
-            <div class="menu-item">
-                <a th:href="@{/admin/statistics}" style="text-decoration:none; color:inherit;">Thống kê / Báo cáo</a>
-            </div>
-            <div class="logout-item">
-                <a th:href="@{/logout}">Đăng xuất</a>
-            </div>
-        </div>
-    </div>
-
-    <h1>Quản trị viên</h1>
-    <div class="logo">Logo</div>
-</header>
 <main class="container">
     <section class="teacher-list-section">
         <div class="section-header">
@@ -87,8 +57,13 @@
                     <td th:text="${student.email}">hs@gmail.com</td>
                     <td th:text="${#strings.substring(student.created_at, 0, 16)}"></td>
                     <td class="actions">
-                        <a href="#" class="edit-btn">✏️</a>
-                        <button type="button" class="delete-btn" th:data-id="${student.id}">🗑️</button>
+                        <a href="#" class="edit-btn" title="Sửa">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
+                        <button type="button" class="delete-btn" th:data-id="${student.id}" title="Xóa">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
                 </tbody>
@@ -96,7 +71,6 @@
         </div>
     </section>
 
-    <!-- 🌸 Modal thêm/sửa -->
     <div id="studentFormModal" class="modal hidden">
         <div class="modal-content">
             <h2 id="formTitle">Thêm học sinh</h2>
@@ -152,7 +126,6 @@
         input.addEventListener('input', fetchFilteredStudents);
     });
 
-    // thêm/sửa
     const modal = document.getElementById('studentFormModal');
     const form = document.getElementById('studentForm');
     const formTitle = document.getElementById('formTitle');
@@ -187,7 +160,6 @@
         });
     });
 
-    // Sinh username + password
     const studentNameInput = document.getElementById('studentName');
     const usernameField = document.getElementById('studentUsername');
     const passwordField = document.getElementById('studentPassword');
@@ -213,7 +185,6 @@
 
     studentNameInput.addEventListener('input', () => generateAccount(studentNameInput.value));
 
-    // Thông báo lỗi
     document.addEventListener("DOMContentLoaded", function () {
         const errorMessageElement = document.getElementById("errorMessageBox");
         if (errorMessageElement && errorMessageElement.textContent.trim() !== "") {
@@ -227,7 +198,6 @@
         }
     });
 
-    // Xóa học sinh
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function() {
             const id = this.getAttribute('data-id');
